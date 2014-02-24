@@ -94,7 +94,7 @@ Which is exactly equivalent to `  > iGoodby, world.<ESC>`: it enters insert
 mode, spits out your text, and exits insert mode.
 
 Be careful with these shorcuts! They only work from normal mode. If vim isn't in
-insert mode when you use them, things could get a little hairy..
+normal mode when you use them, things could get a little hairy..
 
   :new
   > i
