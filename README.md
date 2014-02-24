@@ -44,4 +44,7 @@ arbitrary delays. As such, tests run more slowly than is necessary. Furthermore,
 some lengthy commands in vroom tests require additional arbitrary delays in
 order to make the tests pass.
 
-We're still looking for workarounds.
+We're still looking for workarounds. (If you, like us, wish vim had a sane
+client/server architecture, consider
+[supporting](https://www.bountysource.com/fundraisers/539-neovim-first-iteration)
+[neovim](https://github.com/neovim/neovim).)
