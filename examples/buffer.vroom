@@ -1,0 +1,26 @@
+Buffer controls can be placed at the end of any output line. (See
+examples/controls.vroom for more on controls in general.)
+
+  % Buffer one line one.<CR>
+  % Buffer one line two.
+  :vnew
+  % Buffer two line one.<CR>
+  % Buffer two line two.
+
+If you leave off the buffer control, vroom checks whatever buffer you've loaded
+last. If you haven't loaded a buffer before, it checks the active buffer.
+
+  Buffer two line one.
+  Buffer two line two.
+
+Otherwise, it loads the buffer you specify.
+
+  Buffer one line one. (1)
+  Buffer one line two.
+
+Notice how vroom sticks to the (1) buffer after you load it once. That lasts for
+continuous output lines. Whenever you start a new output block, vroom goes back
+to checking the active buffer.
+
+  Buffer two line one.
+  Buffer two line two.

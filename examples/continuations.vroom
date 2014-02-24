@@ -1,0 +1,54 @@
+Sometimes you want lines that are longer that is sightful. For that, you want
+line continuations.
+
+Vroom line continuations are simple: they are appended to the line prior with no
+whitespace in between.
+
+  > i
+  |Hello<ESC>
+  Hello
+
+
+
+Line continuations can be chained and used anywhere.
+
+  > i
+  |H
+  |e
+  |l
+  |l
+  |o
+  |<ESC>
+
+
+
+They can't be given controls, so they're useful for outputting literal
+parentheses at the end of lines.
+
+  > i
+  |(regex)<ESC>
+  (regex)
+
+
+
+You can join output lines:
+
+  > iHello<ESC>
+  Hel
+  |lo
+
+
+
+And system hijack lines:
+
+  :.!echo "Hello"
+  $ Capt
+  |ured
+  Captured
+
+Though remember that you can string system hijack lines together to get
+newlines, which is more often what you want with system hijacking:
+
+  :.!echo "Hello"
+  $ Captured, my friend.
+  $ Captured.

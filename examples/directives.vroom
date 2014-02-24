@@ -1,0 +1,55 @@
+Lines that start with `  @` are directives. Some are hard-baked shortcuts,
+others unleash special functionality that can't be acheived otherwise.
+
+Vroom directives include:
+
+1. @end, used to check that all outut has been accounted for.
+
+  > 10aHello<CR><ESC>dd
+
+Normally, vroom checks the lines that you tell it to check and no further. Using
+the @end directive, you can verify that the last line checked was the final line
+in the buffer.
+
+  Hello (,+9)
+  @end
+
+
+
+2. @clear, which clears out all the existing buffers. Use it between tests when
+you want to start anew.
+
+  % Hello
+  @clear
+  @end
+
+
+
+3. @messages, which can control the message strictness temporarily.
+
+Normally, you *must* catch error messages, or vroom complains (unless you've
+tweaked the --message-strictness flag).
+
+  :throw 'I broke something!'
+  ~ Error detected while processing * (glob)
+  ~ E605: Exception not caught: * (glob)
+
+But with the @messages directive, you can temporarily change the message
+strictness setting:
+
+  @messages (RELAXED)
+  :throw 'I broke it again.'
+  @messages
+
+Notice how @messages without a control block resets the message handling back
+to its original --message-strictness setting.
+
+
+
+You may also use @system to temporarily override --system-strictness.
+
+  @system (RELAXED)
+  :.!echo "Hello"
+  @system
+
+This will pass even if you run the test with --system-strictness=STRICT

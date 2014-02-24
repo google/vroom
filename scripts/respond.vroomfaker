@@ -1,0 +1,41 @@
+#!/usr/bin/env python
+"""
+A special program which fakes a shell script.
+Given a json specification containing any/all of:
+{
+  'command': ['commands', 'to', 'run'],
+  'stdout': ['output', 'lines', 'to', 'print'],
+  'stderr': ['error', 'lines', 'to', 'print'],
+  'status': status-number,
+}
+It will call the command, print the output, and exit with the status.
+Useful for test frameworks (read: vroom) who want to hijack system calls during
+test runs.
+
+Cannot be rolled into shell.vroomfaker because vim may instruct the shell to
+rediect output to various places: the fake shell needs a command that it can
+tell vim to run.
+"""
+import sys
+import json
+import subprocess
+
+from vroom.shell import OUTCHANNEL
+
+
+if len(sys.argv) != 2:  # program & json
+  sys.stderr.write('Please call this with one json-serialized control.\n')
+  sys.exit(1)
+
+
+control = json.loads(sys.argv[1])
+status = 0
+for command in control.get(OUTCHANNEL.COMMAND, []):
+  # If they give multiple commands, we continue executing until we've done them
+  # all or until one of them has a non-zero exit status.
+  status = status or subprocess.call(command, shell=True)
+if OUTCHANNEL.STDOUT in control:
+  sys.stdout.write('\n'.join(control[OUTCHANNEL.STDOUT]))
+if OUTCHANNEL.STDERR in control:
+  sys.stderr.write('\n'.join(control[OUTCHANNEL.STDERR]))
+sys.exit(control.get(OUTCHANNEL.STATUS, status))

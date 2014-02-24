@@ -1,0 +1,39 @@
+By default, output lines are matched in verbatim mode:
+
+  % The quick brown fox jumps over the lazy dog?
+  The quick brown fox jumps over the lazy dog?
+
+You make modes explicit with control blocks:
+
+  The quick brown fox jumps over the lazy dog? (verbatim)
+
+You may also use `glob` mode and `regex` mode. * and ? are expanded in glob mode
+and may be escaped. This works like python's fnmatch.
+
+  The * * ??? jumps over the * dog[?] (glob)
+
+Regexes are python-style.
+
+  \w+ \w+ brown fox .* lazy dog\? (regex)
+
+Python regex flags etc. all work:
+
+  (?i)\w+ \w+ BROWN FOX .* LAZY DOG. (regex)
+
+We suggest you use flags at the beginning of the regex, so as to not confuse
+vroom into thinking you're misspelling line controls.
+
+
+
+System capture lines are matched in regex mode by default:
+
+  :.!echo 'Hello.'
+  ! echo .*
+  Hello.
+
+You may override that.
+
+  @clear
+  :.!echo '.*'
+  ! echo '.*' (verbatim)
+  .*

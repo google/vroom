@@ -1,0 +1,83 @@
+#!/usr/bin/env python
+"""A fake shell, used by vroom to capture and control vim system calls.
+
+This executable is run once per shell command, and thus must do all of its
+persistent communication via temporary files.
+
+This executable must be run in a modified environment that tells it where to
+write its persistent data.
+"""
+import os
+import pickle
+import subprocess
+import sys
+
+import vroom.shell
+import vroom.test
+import vroom.vim
+
+logfile = os.environ.get(vroom.shell.LOG_FILENAME_VAR)
+controlfile = os.environ.get(vroom.shell.CONTROL_FILENAME_VAR)
+errorfile = os.environ.get(vroom.shell.ERROR_FILENAME_VAR)
+
+try:
+  # Vim will always call this as "/path/to/$SHELL -c 'command'"
+  if len(sys.argv) < 3:
+    sys.stderr.write(
+        'Wrong number of arguments. '
+        'Please use this fake shell for vim testing only.\n')
+    sys.exit(1)
+
+  # Make sure the environment is tweaked in our favor.
+  if not all((logfile, controlfile, errorfile)):
+    sys.stderr.write('Expected environment modifications not found.\n')
+    sys.stderr.write('Please only use this shell in a vroom environment.\n')
+    sys.exit(1)
+
+  # Load the files.
+  with open(logfile, 'rb') as f:
+    logs = pickle.load(f)
+  with open(controlfile, 'rb') as f:
+    controls = pickle.load(f)
+
+  # Parse the user command out from vim's gibberish.
+  command, rebuild = vroom.vim.SplitCommand(sys.argv[2])
+  logs.append(vroom.test.Received(command))
+  handled = False
+
+  # Consume a control if it matches a vroom system action.
+  if len(controls):
+    hijack = controls[0]
+    response = hijack.Response(command)
+    if response is not False:  # The hijack matches.
+      if hijack.expectation is not None:  # It was picky.
+        logs.append(vroom.test.Matched(hijack.expectation, hijack.mode))
+      logs.append(vroom.test.Responded(response))
+      command = response
+      handled = True
+      controls = controls[1:]
+
+  # Check if the command was RECEIVED but not dealt with.
+  if not handled:
+    logs.append(vroom.test.Unexpected())
+
+  # Update the files.
+  with open(controlfile, 'wb') as f:
+    pickle.dump(controls, f)
+  with open(logfile, 'wb') as f:
+    pickle.dump(logs, f)
+
+  # Send the call through to the system.
+  shell = os.environ['SHELL']
+  status = subprocess.call(rebuild(command), executable=shell, shell=True)
+
+except Exception as e:
+  # One hopes that the following contains no errors.
+  with open(errorfile, 'rb') as f:
+    errors = pickle.load(f)
+  errors.append(vroom.test.ErrorLog(*sys.exc_info()))
+  with open(errorfile, 'wb') as f:
+    pickle.dump(errors, f)
+  sys.exit(1)
+
+sys.exit(status)

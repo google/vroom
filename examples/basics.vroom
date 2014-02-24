@@ -1,0 +1,132 @@
+This is a vroom script.
+
+Everything that doesn't start with two spaces is a comment. Feel free to
+explain your tests.
+
+Vroom input lines start with `  > `. That's two spaces, a greater-than sign,
+and another space. They're passed like :map commands:
+
+  > iHello, world!<ESC>
+
+Easy as that. Output lines start with two spaces and check the current buffer.
+
+  Hello, world!
+
+Whenever you break up your output tests, vroom goes back to checking the top of
+the buffer. Let's check the output again to make sure it hasn't changed:
+
+  Hello, world!
+
+It's still good.
+
+You start a new test with three blank lines:
+
+
+
+This is a new test! Starting a new test is roughly equivalent to running
+
+  > :stopinsert<CR>
+  > :silent! bufdo! bdelete!<CR>
+
+and then increasing vroom's test counter. If you think three blank lines are
+unsightly, you may also begin a new test with the @clear directive. See
+examples/directives.vroom for details.
+
+
+
+You can leave vim in insert mode between commands, though it's not recommended:
+
+  > iHello,
+  Hello,
+  >  world!<ESC>
+  Hello, world!
+
+
+
+You may also change which buffer you're checking.
+
+  > iThis text is in buffer THREE<ESC>
+  > :vnew<CR>
+  > iThis text is in buffer 4.<ESC>
+  This text is in buffer THREE (3)
+  This text is in buffer 4. (4)
+
+Notice the (3) and (4) at the end of the lines -- these are choosing the buffer
+to check, and they're called "vroom controls".
+
+(Why 3 and 4 instead of 1 and 2? Vim buffer numbers are sequential, but they
+don't ever reset during a vim session -- you just have to count how many buffers
+you've used. It's the nature of the beast.)
+
+Most vroom lines can end in vroom controls, which are a space followed by
+parenthesis at the end of a line.  You may also do things like select a range of
+lines to check or change the match mode. See examples/controls.vroom for more.
+
+
+
+You may check messsage output with `  ~ ` lines. This is useful for catching and
+handling errors. Make sure you use `:echomsg` and not vanilla `:echo`! Echos are
+not persistent, and vroom has no way of checking them.
+
+  > :echomsg "Hello, world!"<CR>
+  ~ Hello, world!
+  > :echomsg exists('x')<CR>
+  ~ 0
+
+See examples/messages.vroom for more information.
+
+
+
+There are two useful shortcuts that you may appreciate. Firstly, you can use
+lines starting with `  :` to enter vim commands more succintly:
+
+  :echomsg "Another message!"
+  ~ Another message!
+
+This is exactly equivalent to `  > :echomsg "Another message!"<CR>`
+
+Secondly, you can use lines starting with `  % ` to enter user input.
+
+  % Goodbye, world.
+  Goodbye, world.
+
+Which is exactly equivalent to `  > iGoodby, world.<ESC>`: it enters insert
+mode, spits out your text, and exits insert mode.
+
+Be careful with these shorcuts! They only work from normal mode. If vim isn't in
+insert mode when you use them, things could get a little hairy..
+
+  :new
+  > i
+  :LaunchTheNukes
+  > <ESC>
+  & :LaunchTheNukes
+  &
+
+Notice how we just tried to match the output line `:LaunchTheNukes`. We couldn't
+write it verbatim, because vroom would have thought it was a control line! So we
+used `  & ` instead, which explicitly forces output checking. See
+examples/escaping.vroom for details.
+
+
+
+The currently running file can be found in the $VROOMFILE environment variable.
+It is local to the directory where vroom is started.
+
+  :echomsg $VROOMFILE
+  ~ *basics.vroom (glob)
+
+
+
+
+That's all there is to it!
+
+In more complicated tests you may need to sandbox vim, preventing it from doing
+things like hitting the network for data. To learn how to hijack system calls,
+see examples/system.vroom.
+
+If you have weird test output that you need to match, you may want to check out
+examples/escaping.vroom and examples/continuations.vroom.
+
+Then you just run the vroom script (you can use -v for extra output) on your
+vroom file, and away you go!

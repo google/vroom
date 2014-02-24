@@ -1,0 +1,75 @@
+When you end a line with a space and parentheses, you're sending controls to
+vroom. (If you'd rather not, see examples/escaping.vroom.) Different types of
+lines take different types of controls.
+
+The most important controls are output line controls. There are three different
+controls words that you can use in output lines:
+
+
+
+1. You can choose an output buffer. Buffer controls are just a number.
+
+  % Buffer one.
+  :vnew
+  % Buffer two.
+  Buffer one. (1)
+  Buffer two. (2)
+
+See examples/buffer.vroom for more tricks.
+
+
+
+2. You may select a range of lines to match in the current buffer. You do this
+by specifying X,Y  where X is the line to start on and Y is the line to end on.
+
+  > 10aHello<CR><ESC>
+  > 10aWorld<CR><ESC>
+  > dd
+  Hello (1,10)
+  World (,$)
+
+
+
+2.1. A slight variation on the range control, you may use the `.` control to
+check starting at the cursor line instead of starting at the top of the buffer.
+
+  % One<CR>Two<CR>Three
+  > k
+  Two (.)
+
+
+
+3. You may change the match mode of the output line to `regex` or `glob`.
+
+  % The quick brown fox jumps over the lazy dog?
+  The * * ??? jumps over the * dog[?] (glob)
+
+See examples/mode.vroom for more tricks.
+
+
+
+Message capture lines can specify a mode, but no other controls.
+
+  :echomsg "Hello there!"
+  ~ * (glob)
+  :echomsg "Hello there!"
+  ~ .* (regex)
+  :echomsg "Hello there!"
+  ~ Hello there!
+
+System capture lines are similar: you may specify a mode, but nothing else.
+
+
+
+Input lines also have their own special type of control, the delay control. You
+use this to have vroom pause after a command that is going to take a long time.
+
+  :sleep 1 (1.1s)
+  % I'm awake now!
+  I'm awake now!
+
+The delay control is any number (decimal allowed) followed by an 's'. Vroom
+pauses for that many seconds before continuing. The delay must be prefixed with
+a leading zero if it's less than one.
+
+Note that this pause is in addition to the delay specified by the -d flag.

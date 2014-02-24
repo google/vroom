@@ -1,0 +1,40 @@
+  % One<CR>Two<CR>Three<CR><CR>Four
+
+When you have a block of output commands, vroom checks them against the buffer
+sequentially:
+
+  One
+  Two
+  Three
+
+When you have a line break between your output checks, you go back to the top.
+
+  One
+
+  One
+
+  One
+  Two
+  Three
+
+Use two spaces instead of a blank line to check for an empty buffer line. (You
+may also use `  &` if you dislike trailing whitespace.)
+
+  One
+  Two
+  Three
+  &
+  Four
+
+So if you want to comment during your outputing, comment without blank lines
+inbetween.
+
+  One
+Like this.
+  Two
+
+Finally, three or more blank lines acts like a @clear.
+
+
+
+  @end

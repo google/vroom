@@ -1,0 +1,22 @@
+You can check message output with a `  ~ ` line. You must catch messages after
+the command that causes them if you want it to work.
+
+  :echomsg "Hello."
+  ~ Hello.
+
+This mechanism allows vroom to know what lines errors occur on. You can match
+multiple messages on one command.
+
+  :echomsg "First" | echomsg "Second"
+  ~ First
+  ~ Second
+
+By default, vroom doesn't mind if you miss messages. It only minds if you miss
+messages that vroom thinks look like error messages.
+
+You can tweak this behavior with the --message-strictness flag.
+
+For example, the test below will fail with --message-strictness=STRICT, because
+the message is not caught.
+
+  :echomsg "Third."

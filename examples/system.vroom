@@ -1,0 +1,100 @@
+Sometimes, vim makes calls to the system at large. That could be bad during
+testing if your plugin is hitting a network or launching the nukes.
+
+Vroom provides you with two tools to handle vim system calls.
+
+Firstly, you can verify that system calls match a certain expected pattern:
+
+  :.!echo "Hey system, talk to me."
+  ! echo .*
+
+System calls are matched in regex mode by default.
+
+
+
+This works with :call as well.
+
+  :echomsg system('echo hi')
+  ! echo hi (verbatim)
+  ~ hi
+
+
+
+If the system call that vim actually makes doesn't match the one you specify,
+vroom will complain.
+
+By default, any unexpected system calls will trigger a failure. This strictness
+helps protect you from unknowingly triggering system calls that succeed in your
+environment but fail when others try to run them, and also encourages you to
+document your expectations. But if this gets annoying, you can always turn it
+off with @system (RELAXED).
+
+  @system (RELAXED)
+  :.!echo "Come at me, bro."
+
+
+This is nice, but it doesn't really give you much control over the system. To do
+that, you need to hijack the system and hoodwink vim:
+
+  :.!echo "Hey system, talk to me."
+  ! echo "Hey system, talk to me\."
+  $ No. I'm not talking.
+
+Let's check whether or not that worked:
+
+  No. I'm not talking.
+
+Good!
+
+
+
+If you need newlines in your dummy output, string hijack commands together.
+
+  :.!echo "Please?"
+  ! echo "Please\?"
+  $ No!
+  $ Go away.
+  No!
+  Go away.
+
+
+
+You may use system hijack lines to change the exit status using the "status"
+control word:
+
+  :.!echo "Testing"
+  $ 2 (status)
+  :echomsg v:shell_error
+  ~ 2
+
+
+Or even to change the command entirely:
+
+  :.!rm "Testing."
+  $ echo "Testing." (command)
+  Testing.
+
+The default output channel is 'stdout'. You may explicitly mark it if you wish.
+
+  :.!echo "Testing"
+  $ .gnitseT (stdout)
+  .gnitseT
+
+
+
+If you capture a command with a regex, the regex's match groups will be
+available to hijack lines.
+
+  :.!rm hello
+  ! rm (\w+)
+  $ echo \1 (command)
+  hello
+
+
+
+  :.!rm hello
+  ! rm (\w+)
+  $ \1 \1
+  hello hello
+
+  @system

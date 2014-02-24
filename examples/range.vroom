@@ -1,0 +1,37 @@
+The range syntax is X,Y. Only the comma is required. If X is ommitted, vroom
+picks up where it starts off. If Y is ommited, only one line is matched.
+
+If both are ommited, nothing really happens, but it's technically valid:
+
+  % Hello,<CR>
+  % World
+  Hello,
+  World (,)
+
+
+
+X may also be `.` to start the match at the current cursor position.
+
+  % One<CR>Two<CR>Two<CR>Three<CR>Three<CR>Three<CR>
+  > 5k
+  Two (.,+1)
+
+
+
+Y is the end of the range. Y may be absolute:
+
+  > 10aHello<CR><ESC>
+  > 10aWorld<CR><ESC>
+  > dd
+  Hello (1,10)
+  World (,20)
+
+Or relative:
+
+  Hello (1,10)
+  World (,+9)
+
+Y may also be `$` to continue the check until the end of the buffer.
+
+  Hello (1,10)
+  World (,$)

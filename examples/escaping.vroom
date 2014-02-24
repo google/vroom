@@ -1,0 +1,36 @@
+Sometimes, vroom syntax gets in the way of your tests. When you have weird
+tests, there's two escaping rules that you need to remember.
+
+
+
+1. The andpersand (&) escapes a control block.
+
+  % Literal line ending in (&1)
+  Literal line ending in (&1)
+
+The contents of the buffer will be "Literal line ending in (1)"
+
+
+
+2. Lines starting with `  & ` are also output lines.
+
+  % > This looks like an input line.
+  & > This looks like an input line.
+
+As a special case, you can use the line `  &` to match an empty buffer line.
+(two blank spaces will also work, but some editors complain about trailing
+whitespace.)
+
+  @clear
+  % Hello<CR><CR>World
+  Hello
+  &
+  World
+
+
+
+Finally, remember that you can escape special characters in glob mode with
+square brackets.
+
+  % What? An asterix*
+  & ????[?] An *[*] (glob)
