@@ -1,5 +1,4 @@
-# Vroom
-## Launch your vim tests
+# Vroom: Launch vim tests
 
 _**Vroom is experimental.** There are still some issues with vim that we
 haven't figured out how to work around. We reserve the right to make backwards
