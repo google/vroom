@@ -35,3 +35,16 @@ Did you accidentally set off a giant vroom test that's running too fast to halt?
 Never fear! Pop open another terminal and `vroom --murder`.
 Make sure the `--servername` flag matches with the vroom you're trying to kill.
 You may need to run `reset` in the terminal with the murdered vroom.
+
+### Known issues
+
+Vroom uses vim as a server. Unfortunately, we don't yet have a reliable way to
+detect when vim has finished processing commands. Vroom currently relies upon
+arbitrary delays. As such, tests run more slowly than is necessary. Furthermore,
+some lengthy commands in vroom tests require additional arbitrary delays in
+order to make the tests pass.
+
+We're still looking for workarounds. (If you, like us, wish vim had a sane
+client/server architecture, consider
+[supporting](https://www.bountysource.com/fundraisers/539-neovim-first-iteration)
+[neovim](https://github.com/neovim/neovim).)
