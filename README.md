@@ -36,7 +36,14 @@ Never fear! Pop open another terminal and `vroom --murder`.
 Make sure the `--servername` flag matches with the vroom you're trying to kill.
 You may need to run `reset` in the terminal with the murdered vroom.
 
-### Known issues
+## Installation
+
+The easiest way to install vroom is to cd into the vroom directory and run
+```sh
+python setup.py build && sudo python setup.py install
+```
+
+## Known issues
 
 Vroom uses vim as a server. Unfortunately, we don't yet have a reliable way to
 detect when vim has finished processing commands. Vroom currently relies upon
