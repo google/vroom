@@ -36,6 +36,10 @@ Never fear! Pop open another terminal and `vroom --murder`.
 Make sure the `--servername` flag matches with the vroom you're trying to kill.
 You may need to run `reset` in the terminal with the murdered vroom.
 
+See the
+[Tips and Tricks page](https://github.com/google/vroom/wiki/Tips-and-Tricks)
+page for some strategies for getting the most out of vroom.
+
 ## Installation
 
 The easiest way to install vroom is to cd into the vroom directory and run
