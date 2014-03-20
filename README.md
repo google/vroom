@@ -47,6 +47,8 @@ The easiest way to install vroom is to cd into the vroom directory and run
 python setup.py build && sudo python setup.py install
 ```
 
+Vim syntax files for vroom can be found [here](https://github.com/google/vim-ft.vroom).
+
 ## Known issues
 
 Vroom uses vim as a server. Unfortunately, we don't yet have a reliable way to
