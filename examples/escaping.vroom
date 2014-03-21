@@ -3,7 +3,7 @@ tests, there's two escaping rules that you need to remember.
 
 
 
-1. The andpersand (&) escapes a control block.
+1. The ampersand (&) escapes a control block.
 
   % Literal line ending in (&1)
   Literal line ending in (&1)
@@ -32,5 +32,5 @@ whitespace.)
 Finally, remember that you can escape special characters in glob mode with
 square brackets.
 
-  % What? An asterix*
+  % What? An asterisk*
   & ????[?] An *[*] (glob)
