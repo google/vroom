@@ -1,6 +1,7 @@
 """Vroom fake shell bridge."""
 import json
 import os
+import os.path
 import pickle
 import pipes
 import re
@@ -15,6 +16,7 @@ import vroom.test
 # pylint: disable-msg=nonstandard-exception
 
 VROOMFILE_VAR = 'VROOMFILE'
+VROOMDIR_VAR = 'VROOMDIR'
 LOG_FILENAME_VAR = 'VROOM_SHELL_LOGFILE'
 CONTROL_FILENAME_VAR = 'VROOM_SHELL_CONTROLLFILE'
 ERROR_FILENAME_VAR = 'VROOM_SHELL_ERRORFILE'
@@ -81,6 +83,7 @@ class Communicator(object):
 
     self.env = os.environ.copy()
     self.env[VROOMFILE_VAR] = filename
+    self.env[VROOMDIR_VAR] = os.path.dirname(filename) or '.'
     self.env[vroom.shell.LOG_FILENAME_VAR] = self.log_filename
     self.env[vroom.shell.CONTROL_FILENAME_VAR] = self.control_filename
     self.env[vroom.shell.ERROR_FILENAME_VAR] = self.error_filename
