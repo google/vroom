@@ -64,7 +64,7 @@ lines to check or change the match mode. See examples/controls.vroom for more.
 
 
 
-You may check messsage output with `  ~ ` lines. This is useful for catching and
+You may check message output with `  ~ ` lines. This is useful for catching and
 handling errors. Make sure you use `:echomsg` and not vanilla `:echo`! Echos are
 not persistent, and vroom has no way of checking them.
 
@@ -78,7 +78,7 @@ See examples/messages.vroom for more information.
 
 
 There are two useful shortcuts that you may appreciate. Firstly, you can use
-lines starting with `  :` to enter vim commands more succintly:
+lines starting with `  :` to enter vim commands more succinctly:
 
   :echomsg "Another message!"
   ~ Another message!
@@ -93,7 +93,7 @@ Secondly, you can use lines starting with `  % ` to enter user input.
 Which is exactly equivalent to `  > iGoodby, world.<ESC>`: it enters insert
 mode, spits out your text, and exits insert mode.
 
-Be careful with these shorcuts! They only work from normal mode. If vim isn't in
+Be careful with these shortcuts! They only work from normal mode. If vim isn't in
 normal mode when you use them, things could get a little hairy..
 
   :new

@@ -1,7 +1,7 @@
-The range syntax is X,Y. Only the comma is required. If X is ommitted, vroom
-picks up where it starts off. If Y is ommited, only one line is matched.
+The range syntax is X,Y. Only the comma is required. If X is omitted, vroom
+picks up where it starts off. If Y is omitted, only one line is matched.
 
-If both are ommited, nothing really happens, but it's technically valid:
+If both are omitted, nothing really happens, but it's technically valid:
 
   % Hello,<CR>
   % World

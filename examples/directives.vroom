@@ -1,9 +1,9 @@
 Lines that start with `  @` are directives. Some are hard-baked shortcuts,
-others unleash special functionality that can't be acheived otherwise.
+others unleash special functionality that can't be achieved otherwise.
 
 Vroom directives include:
 
-1. @end, used to check that all outut has been accounted for.
+1. @end, used to check that all output has been accounted for.
 
   > 10aHello<CR><ESC>dd
 
