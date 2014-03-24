@@ -116,6 +116,15 @@ It is local to the directory where vroom is started.
   :echomsg $VROOMFILE
   ~ *basics.vroom (glob)
 
+The relative path to the directory containing $VROOMFILE can be found in the
+$VROOMDIR environment variable.
+
+If vroom was started from the directory containing $VROOMFILE, $VROOMDIR will
+be set to '.', and so a file in the same directory as $VROOMFILE can be named
+using a path such as $VROOMDIR/foo.vim.
+
+  :echomsg $VROOMDIR
+  ~ (\.|(.+/)?examples) (regex)
 
 
 
