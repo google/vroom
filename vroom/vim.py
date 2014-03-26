@@ -135,8 +135,7 @@ class Communicator(object):
           '--servername', self.args.servername,
           '--remote-expr', expression])
     except ErrorOnExit as e:
-      if (e.error_text ==
-          'E449: Invalid expression received: Send expression failed.'):
+      if e.error_text.startswith('E449:'):  # Invalid expression received
         raise InvalidExpression(expression)
       raise
 
