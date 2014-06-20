@@ -44,7 +44,7 @@ class Communicator(VimCommunicator):
 
     Args:
       command: The command to send.
-      extra_delay: IGNORED
+      extra_delay: Delay in excess of --delay
     Raises:
       Quit: If vim quit unexpectedly.
     """

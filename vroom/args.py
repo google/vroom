@@ -115,7 +115,8 @@ parser.add_argument(
     '-d',
     '--delay',
     type=float,
-    default=0.09,
+    # See Parse for the real default
+    default=-1,
     metavar='DELAY',
     help="""
 Delay after each vim command (in seconds).
@@ -283,6 +284,10 @@ def Parse(args):
 
   if args.out != sys.stdout:
     args.color = vroom.color.Colorless
+
+  if args.delay == -1:
+    # Default delay is 0.09 for Vim, 0 for Neovim
+    args.delay = 0 if args.neovim else 0.09
 
   for dumper in ('dump_messages', 'dump_commands', 'dump_syscalls'):
     if getattr(args, dumper) is True:
