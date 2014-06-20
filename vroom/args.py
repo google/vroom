@@ -78,7 +78,7 @@ yourself.
 parser.add_argument(
     '-s',
     '--servername',
-    default='vroom',
+    default='VROOM',
     help="""
 The vim servername (see :help clientserver).
 Use this to help vroom differentiate between vims if you want to run multiple
@@ -101,6 +101,12 @@ parser.add_argument(
 Keeps vim open after a vroom failure, allowing you to inspect vim's state.
 """)
 
+parser.add_argument(
+    '--neovim',
+    action='store_true',
+    help="""
+Run Neovim instead of Vim
+""")
 
 #
 # Timing
