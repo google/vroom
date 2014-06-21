@@ -65,7 +65,7 @@ class Communicator(VimCommunicator):
     Raises:
       Quit: If vim quit unexpectedly.
     """
-    return self.conn.command_output(expression)
+    return self.conn.eval(expression)
 
   def GetBufferLines(self, number):
     """Gets the lines in the requested buffer.
@@ -104,31 +104,4 @@ class Communicator(VimCommunicator):
       lineno = self.conn.get_current_window().cursor[0]
       self._cache['line'] = int(lineno)
     return self._cache['line']
-
-  def GetMessages(self):
-    """Gets the vim message list.
-
-    Returns:
-      The message list.
-    """
-    # This prevents GetMessages() from being called twice in a row.
-    # (When checking a (msg) output line, first we check the messages then we
-    # load the buffer.) Cleans up --dump-commands a bit.
-    if 'msg' not in self._cache:
-      self._cache['msg'] = self.Ask("messages").splitlines()
-    return self._cache['msg']
-
-  # The only different is the *call*
-  def Output(self, writer):
-    """Send the writer output to the user."""
-    if hasattr(self, 'process'):
-      buf = StringIO()
-      writer.Write(buf)
-      self.Ask('call VroomDie({})'.format(VimscriptString(buf.getvalue())))
-      buf.close()
-
-  def Clear(self):
-    self.writer.Log(None)
-    self.Ask('call VroomClear()')
-    self._cache = {}
 
