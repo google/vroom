@@ -48,8 +48,7 @@ class Communicator(VimCommunicator):
     Raises:
       Quit: If vim quit unexpectedly.
     """
-    # FIXME: I have no idea what I am doing
-    # this is a hack because Neovim does not have this YET
+    self.writer.Log(command)
     cmd = 'call feedkeys("%s")' % command.replace('"', '\\"')
     cmd = cmd.replace('<', '\<')
     self.conn.command(cmd)
