@@ -10,7 +10,9 @@ import vroom.messages
 import vroom.shell
 
 
-parser = argparse.ArgumentParser(description='Vroom: launch your tests.')
+parser = argparse.ArgumentParser(
+    description='Vroom: launch your tests.',
+    formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
 
 class DirectoryArg(argparse.Action):
