@@ -120,6 +120,7 @@ parser.add_argument(
     metavar='DELAY',
     help="""
 Delay after each vim command (in seconds).
+Default is 0.09 for Vim and 0.00 for Neovim
 """)
 
 parser.add_argument(
