@@ -29,7 +29,7 @@ class Communicator(VimCommunicator):
       return
 
     try:
-      self.conn.command('call VroomEnd()')
+      self.conn.command('qa!')
     except IOError:
       pass
 
