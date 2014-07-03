@@ -7,7 +7,6 @@ import vroom.messages
 import vroom.output
 import vroom.shell
 import vroom.vim
-import vroom.neovim_mod
 
 
 class Environment(object):
@@ -24,7 +23,8 @@ class Environment(object):
     self.writer = vroom.output.Writer(filename, args)
     self.shell = vroom.shell.Communicator(filename, self, self.writer)
     if args.neovim:
-        self.vim = vroom.neovim_mod.Communicator(args, self.shell.env, self.writer)
+        import vroom.neovim_mod as neovim_mod
+        self.vim = neovim_mod.Communicator(args, self.shell.env, self.writer)
     else:
         self.vim = vroom.vim.Communicator(args, self.shell.env, self.writer)
     self.buffer = vroom.buffer.Manager(self.vim)
