@@ -139,7 +139,7 @@ parser.add_argument(
     default=0.5,
     metavar='STARTUPTIME',
     help="""
-How long to wait for vim to start (in seconds).
+How long to wait for vim to start (in seconds). This option is ignored for Neovim.
 """)
 
 #
