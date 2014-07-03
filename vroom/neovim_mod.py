@@ -3,6 +3,7 @@ from vroom.vim import Communicator as VimCommunicator
 import subprocess
 import time
 import neovim
+import os
 try:
   from StringIO import StringIO
 except ImportError:
@@ -36,7 +37,11 @@ class Communicator(VimCommunicator):
   def Start(self):
     """Starts Neovim"""
     self.process = subprocess.Popen(self.start_command, env=self.env)
-    time.sleep(self.args.startuptime)
+    start_time = time.time()
+    # Wait at most 5s for the Neovim socket
+    while not os.path.exists(self.args.servername) \
+            and time.time() - start_time < 5:
+        time.sleep(0.01)
     self.conn = neovim.connect(self.args.servername)
 
   def Communicate(self, command, extra_delay=0):
