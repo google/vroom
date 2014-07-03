@@ -110,3 +110,9 @@ class Communicator(VimCommunicator):
       self._cache['line'] = int(lineno)
     return self._cache['line']
 
+  def Kill(self):
+    """Kills the Neovim process and removes the socket"""
+    VimCommunicator.Kill(self)
+
+    if os.path.exists(self.args.servername):
+        os.remove(self.args.servername)
