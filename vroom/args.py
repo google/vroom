@@ -126,10 +126,12 @@ Default is 0.09 for Vim and 0.00 for Neovim
 parser.add_argument(
     '--shell-delay',
     type=float,
-    default=0.25,
+    # See Parse for the real default
+    default=-1,
     metavar='SHELL_DELAY',
     help="""
-Extra delay after a vim command that's expected to trigger a shell command.
+Extra delay (in seconds) after a vim command that's expected to trigger a shell command.
+Default is 0.25 for Vim and 0.00 for Neovim
 """)
 
 parser.add_argument(
@@ -289,6 +291,9 @@ def Parse(args):
   if args.delay == -1:
     # Default delay is 0.09 for Vim, 0 for Neovim
     args.delay = 0 if args.neovim else 0.09
+  if args.shell_delay == -1:
+    # Default shell delay is 0.25 for Vim, 0 for Neovim
+    args.shell_delay = 0 if args.neovim else 0.25
 
   for dumper in ('dump_messages', 'dump_commands', 'dump_syscalls'):
     if getattr(args, dumper) is True:
