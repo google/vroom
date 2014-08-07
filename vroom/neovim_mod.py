@@ -54,10 +54,8 @@ class Communicator(VimCommunicator):
       Quit: If vim quit unexpectedly.
     """
     self.writer.Log(command)
-    command = command.replace('\\', '\\\\')
-    command = command.replace('"', '\\"')
-    command = command.replace('<', '\\<')
-    self.conn.command('call feedkeys("%s")' % command)
+    parsed_command = self.conn.replace_termcodes(command, True, True, True)
+    self.conn.feedkeys(parsed_command, '')
     self._cache = {}
     time.sleep(self.args.delay + extra_delay)
 
