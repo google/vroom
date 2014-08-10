@@ -29,7 +29,7 @@ REGEX = vroom.Specification(
     RANGE=re.compile(r'^(\.|\d+)?(?:,(\+)?(\$|\d+)?)?$'),
     MODE=re.compile(r'^(%s)$' % '|'.join(MODE.Values())),
     DELAY=re.compile(r'^(\d+(?:\.\d+)?)s?$'),
-    CONTROL_BLOCK=re.compile(r'(  .*) \(\s*([\w\d.+,$ ]*)\s*\)$'),
+    CONTROL_BLOCK=re.compile(r'(  .*) \(\s*([%><=\'"\w\d.+,$ ]*)\s*\)$'),
     ESCAPED_BLOCK=re.compile(r'(  .*) \(&([^)]+)\)$'))
 
 DEFAULT_MODE = MODE.VERBATIM
