@@ -1,0 +1,196 @@
+Sometimes you may find yourself repeating similar chunks of vroom code across
+different tests. For example, let's write some tests for the 'cindent' feature:
+
+Enter a small, unindented function
+  % void func()<cr>
+  % {<cr>
+  % if (true) {<cr>
+  % printf("hello\n!");<cr>
+  % }<cr>
+  % }<cr>
+Enable cindent and set tabstop and shiftwidth to 2
+  :set cin ts=2 sw=2 et
+  > gg=G
+Now function should have a 2-space indentation:
+  void func()
+  {
+    if (true) {
+      printf("hello\n!");
+    }
+  }
+  &
+  @end
+  @clear
+
+Now let's test cindent again, but with another value for ts/sw. To make sure
+the previous indentation won't affect this one, we start with a clear buffer:
+  % void func()<cr>
+  % {<cr>
+  % if (true) {<cr>
+  % printf("hello\n!");<cr>
+  % }<cr>
+  % }<cr>
+  :set cin ts=4 sw=4 et
+  > gg=G
+  void func()
+  {
+      if (true) {
+          printf("hello\n!");
+      }
+  }
+  &
+  @end
+  @clear
+
+The above pattern of writing tests can generalized like this:
+
+- Start with a clear buffer
+- Input some text
+- Call a function or command with some parameters
+- Verify if the buffer is in a expected state
+- Repeat but with a different set of parameters
+
+Macros can be used to create reusable chunks of vroom code and help reduce
+boilerplate across tests. Let's rewrite the above test using macros:
+
+  @macro (input_unindented_function)
+  % void func()<cr>
+  % {<cr>
+  % if (true) {<cr>
+  % printf("hello\n!");<cr>
+  % }<cr>
+  % }<cr>
+  @endmacro
+
+The above defined a macro named 'input_unindented_function' that takes care of
+entering an unindented function in the current buffer.
+
+  &
+  @end
+
+As you can see, the buffer wasn't modified. The macro can be "executed" with
+a @do directive:
+
+  @do (input_unindented_function)
+  void func()
+  {
+  if (true) {
+  printf("hello\n!");
+  }
+  }
+  &
+  @end
+
+Now indent and verify output
+  :set cin ts=4 sw=4 et
+  > gg=G
+  void func()
+  {
+      if (true) {
+          printf("hello\n!");
+      }
+  }
+  &
+  @end
+  @clear
+
+A cool thing about macros is that the lines between the @macro/@endmacro
+directives can contain python format string syntax(the same syntax used by
+str.format()). For example:
+
+  @macro (greet)
+  % hello {subject}<cr>
+  @endmacro
+  @do (greet, subject='world')
+  @do (greet, subject='vroom')
+  hello world
+  hello vroom
+  &
+  @end
+  @clear
+
+That means we can generalize even the cindent verification:
+
+  @macro (indent_and_verify)
+  :set cin ts={count} sw={count} et
+  > gg=G
+  void func()
+  {{
+  {fill:{count}}if (true) {{
+  {fill:{count}}{fill:{count}}printf("hello\n!");
+  {fill:{count}}}}
+  }}
+Notice how any braces that are part of the output need to be escaped. This is
+only necessary when the macro is executed with arguments.
+  &
+  @endmacro
+
+Let's split into two macros to improve readability:
+
+  @macro (verify)
+  void func()
+  {{
+  {indent}if (true) {{
+  {indent}{indent}printf("hello\n!");
+  {indent}}}
+  }}
+  &
+  @endmacro
+
+  @macro (indent_and_verify)
+Notice how macros can be redefined at any time
+  :set cin ts={count} sw={count} et
+  > gg=G
+  @do (verify, indent='{fill:{count}}')
+  @endmacro
+
+After the macro is defined we can easily test cindent for multiple ts/sw
+values. The keyword arguments passed to @do can contain simple python
+expressions:
+
+  @do (input_unindented_function)
+  @do (indent_and_verify, fill=' ', count=2)
+  @clear
+  @do (input_unindented_function)
+  @do (indent_and_verify, fill=' ', count=4)
+  @clear
+
+Since macros can contain `@do` directives, the test can be simplified even
+further:
+
+  @macro (test_cindent)
+  @do (input_unindented_function)
+  @do (indent_and_verify, fill=' ', count={width})
+  @clear
+  @endmacro
+
+  @do (test_cindent, width=2)
+  @do (test_cindent, width=4)
+  @do (test_cindent, width=6)
+  @do (test_cindent, width=8)
+
+It's important to understand parsing macro contents is delayed until a
+corresponding @do directive is found:
+
+  @macro (insert_or_verify)
+  {prefix}some text
+  @endmacro
+
+Input the text
+
+  @do (insert_or_verify, prefix='% ')
+  @do (insert_or_verify, prefix='')
+  @clear
+
+Finally, macro names can contain spaces for more descriptive names:
+
+  @macro (test cindent for arbitrary widths)
+  @do (test_cindent, width={width})
+  @endmacro
+
+  @do (test cindent for arbitrary widths, width=2)
+  @do (test cindent for arbitrary widths, width=4)
+  @do (test cindent for arbitrary widths, width=8)
+
+For more details about python format syntax, see:
+https://docs.python.org/2/library/string.html#format-string-syntax
