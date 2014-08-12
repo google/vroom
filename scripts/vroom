@@ -49,10 +49,10 @@ if args.murder:
 dirty = False
 writers = []
 try:
-  for filename in args.filenames:
-    with open(filename) as f:
-      runner = vroom.runner.Vroom(filename, args)
-      writers.append(runner(f))
+  for file in args.files:
+    with open(file['name']) as f:
+      runner = vroom.runner.Vroom(file['name'], args)
+      writers.append(runner(f, file['setup']))
       if runner.dirty:
         dirty = True
 except vroom.vim.ServerQuit as e:

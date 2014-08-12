@@ -56,7 +56,7 @@ class Vroom(object):
       self._running_command.Execute()
     self.ResetCommands()
 
-  def __call__(self, filehandle):
+  def __call__(self, filehandle, setupfiles):
     """Runs vroom on a file.
 
     Args:
@@ -68,7 +68,11 @@ class Vroom(object):
     try:
       self.env.writer.Begin(lines)
       self.env.vim.Start()
-      self.Run(lines)
+      for setupfile in setupfiles:
+        self.Run(setupfile['name'], setupfile['lines'])
+      self.Run(self.env.filename, lines)
+      self.env.writer.actions.Log(vroom.test.RESULT.PASSED, self._lineno or 0)
+      self.env.vim.Quit()
     except vroom.ParseError as e:
       self.Record(vroom.test.RESULT.ERROR, e)
     except vroom.test.Failure as e:
@@ -116,7 +120,7 @@ class Vroom(object):
     self.ExecuteCommands()
     function(*args, **kwargs)
 
-  def Run(self, lines):
+  def Run(self, filename, lines):
     """Runs a vroom file.
 
     Args:
@@ -163,5 +167,3 @@ class Vroom(object):
       else:
         raise vroom.ConfigurationError('Unrecognized action "%s"' % action)
     self.ExecuteCommands()
-    self.env.writer.actions.Log(vroom.test.RESULT.PASSED, self._lineno or 0)
-    self.env.vim.Quit()

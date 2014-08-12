@@ -1,0 +1,11 @@
+Tests in a directory automatically include .setup.vroomhook files present in the
+same directory or any of its parents. These are setup hooks that can be used to
+perform common setup procedures, such as defining macros or sourcing vimscript
+files.
+
+This directory has a .setup.vroomhook file so it's contents should have
+been executed:
+
+  first hook
+  &
+  @end

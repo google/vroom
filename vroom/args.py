@@ -4,6 +4,7 @@ import glob
 import itertools
 import os.path
 import sys
+import os.path
 
 import vroom.color
 import vroom.messages
@@ -299,12 +300,12 @@ def Parse(args):
     if getattr(args, dumper) is True:
       setattr(args, dumper, args.out)
 
-  args.filenames = list(itertools.chain(
+  args.files = WithHooks(list(itertools.chain(
       Crawl(args.crawl, args.skip),
-      *map(Expand, args.filename)))
-  if not args.filenames and not args.murder:
+      *map(Expand, args.filename))))
+  if not args.files and not args.murder:
     raise ValueError('Nothing to do.')
-  if args.murder and args.filenames:
+  if args.murder and args.files:
     raise ValueError(
         'You may birth tests and you may end them, but not both at once!')
 
@@ -383,3 +384,80 @@ def Crawl(directory, ignored):
       else:
         if filename.endswith('.vroom'):
           yield fullpath
+
+
+def WithHooks(filenames):
+  """Associates each filename with a list of setup hooks
+
+  Args:
+    filenames: A list of filenames
+  Yields:
+      dictionaries with the following keys:
+      'name': The filename
+      'setup': an iterator as specified by `FindHooksForDirectory`
+  """
+  hooks_for_directories = {}
+  for filename in filenames:
+    dirpath = os.path.dirname(filename)
+    if dirpath not in hooks_for_directories:
+      hooks_for_directories[dirpath] = FindHooksForDirectory(dirpath)
+    yield {'name': filename, 'setup': hooks_for_directories[dirpath]}
+
+
+def FindHooksForDirectory(dirpath):
+  """Finds all hooks for 'dirpath' and any of it's parent directories
+  >>> hooks = FindHooksForDirectory('examples/hooks/a/b')
+  >>> hooks[0]['name']
+  'examples/hooks/.setup.vroomhook'
+  >>> hooks[0]['lines']
+  ['  % first hook<cr>\\n']
+  >>> hooks[1]['name']
+  'examples/hooks/a/.setup.vroomhook'
+  >>> hooks[1]['lines']
+  ['  % second hook<cr>\\n']
+  >>> hooks[2]['name']
+  'examples/hooks/a/b/.setup.vroomhook'
+  >>> hooks[2]['lines']
+  ['  % third hook<cr>\\n']
+  >>> hooks = FindHooksForDirectory('examples/hooks/a')
+  >>> hooks[0]['name']
+  'examples/hooks/.setup.vroomhook'
+  >>> hooks[0]['lines']
+  ['  % first hook<cr>\\n']
+  >>> hooks[1]['name']
+  'examples/hooks/a/.setup.vroomhook'
+  >>> hooks[1]['lines']
+  ['  % second hook<cr>\\n']
+  >>> hooks = FindHooksForDirectory('examples/hooks')
+  >>> hooks[0]['name']
+  'examples/hooks/.setup.vroomhook'
+  >>> hooks[0]['lines']
+  ['  % first hook<cr>\\n']
+  >>> FindHooksForDirectory('examples')
+  []
+
+  Args:
+    dirname: A directory path
+  Returns:
+      a list of dictionaries with the following keys:
+      'name': The hook filename
+      'hooks': a list of {'name', 'lines'} where 'name' is the full path
+              of the corresponding hook file and 'lines' is a list
+              of lines for that file.
+  """
+  dirlist = []
+  while dirpath and os.path.exists(dirpath):
+    dirlist.append(dirpath)
+    dirpath = os.path.dirname(dirpath)
+  hooks = []
+  # Iterate in reversed order to hooks for parent directories are executed
+  # first
+  for dirpath in reversed(dirlist):
+    hook_fname = os.path.join(dirpath, '.setup.vroomhook')
+    if os.path.exists(hook_fname):
+      with open(hook_fname) as f:
+        hooks.append({
+          'name': hook_fname,
+          'lines': list(f)
+        })
+  return hooks

@@ -1,0 +1,8 @@
+This directory has it's own .setup.vroomhook file, but it is only included after
+the parent hook. The way setup hooks are executed can be used to hierarchically
+organize tests with common setup:
+
+  first hook
+  second hook
+  &
+  @end
