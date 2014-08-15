@@ -3,7 +3,7 @@ from distutils.core import setup
 
 setup(
     name='vroom',
-    version='0.10.0',
+    version='0.11.0',
     description='Launch your vimscript tests',
     author='Nate Soares',
     author_email='nate@so8r.es',
