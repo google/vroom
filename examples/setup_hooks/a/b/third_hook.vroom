@@ -1,0 +1,7 @@
+Following the pattern, this directory's hook is included after all it's parents:
+
+  first hook
+  second hook
+  third hook
+  &
+  @end
