@@ -1,5 +1,6 @@
 """Vroom command line arguments."""
 import argparse
+from argparse import SUPPRESS
 import glob
 import itertools
 import os.path
@@ -32,6 +33,7 @@ class DirectoryArg(argparse.Action):
 parser.add_argument(
     'filename',
     nargs='*',
+    default=SUPPRESS,
     help="""
 The vroom file(s) to run.
 """)
@@ -118,22 +120,22 @@ parser.add_argument(
     '--delay',
     type=float,
     # See Parse for the real default
-    default=-1,
+    default=SUPPRESS,
     metavar='DELAY',
     help="""
 Delay after each vim command (in seconds).
-Default is 0.09 for Vim and 0.00 for Neovim
+(default: 0.09 for Vim, 0.00 for Neovim)
 """)
 
 parser.add_argument(
     '--shell-delay',
     type=float,
     # See Parse for the real default
-    default=-1,
+    default=SUPPRESS,
     metavar='SHELL_DELAY',
     help="""
-Extra delay (in seconds) after a vim command that's expected to trigger a shell command.
-Default is 0.25 for Vim and 0.00 for Neovim
+Extra delay (in seconds) after a vim command that's expected to trigger a shell
+command. (default: 0.25 for Vim, 0.00 for Neovim)
 """)
 
 parser.add_argument(
@@ -143,7 +145,8 @@ parser.add_argument(
     default=0.5,
     metavar='STARTUPTIME',
     help="""
-How long to wait for vim to start (in seconds). This option is ignored for Neovim.
+How long to wait for vim to start (in seconds). This option is ignored for
+Neovim.
 """)
 
 #
@@ -189,7 +192,7 @@ parser.add_argument(
     help="""
 Dump a log of vim messages received during execution.
 See :help messages in vim.
-Logs are written to [FILE], or to the same place as --out if [FILE] is ommited.
+Logs are written to [FILE], or to the same place as --out if [FILE] is omitted.
 """)
 
 parser.add_argument(
@@ -201,7 +204,7 @@ parser.add_argument(
     metavar='FILE',
     help="""
 Dump a list of command sent to vim during execution.
-Logs are written to [FILE], or to the same place as --out if [FILE] is ommited.
+Logs are written to [FILE], or to the same place as --out if [FILE] is omitted.
 """)
 
 
@@ -214,7 +217,7 @@ parser.add_argument(
     metavar='FILE',
     help="""
 Dump vim system call logs to [FILE].
-Logs are written to [FILE], or to the same place as --out if [FILE] is ommited.
+Logs are written to [FILE], or to the same place as --out if [FILE] is omitted.
 """)
 
 
@@ -290,10 +293,10 @@ def Parse(args):
   if args.out != sys.stdout:
     args.color = vroom.color.Colorless
 
-  if args.delay == -1:
+  if not hasattr(args, 'delay'):
     # Default delay is 0.09 for Vim, 0 for Neovim
     args.delay = 0 if args.neovim else 0.09
-  if args.shell_delay == -1:
+  if not hasattr(args, 'shell_delay'):
     # Default shell delay is 0.25 for Vim, 0 for Neovim
     args.shell_delay = 0 if args.neovim else 0.25
 
@@ -303,7 +306,7 @@ def Parse(args):
 
   args.filenames = list(itertools.chain(
       Crawl(args.crawl, args.skip),
-      *map(Expand, args.filename)))
+      *map(Expand, getattr(args, 'filename', []))))
   if not args.filenames and not args.murder:
     raise ValueError('Nothing to do.')
   if args.murder and args.filenames:
