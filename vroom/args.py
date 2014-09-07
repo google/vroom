@@ -80,7 +80,7 @@ yourself.
 parser.add_argument(
     '-s',
     '--servername',
-    default='vroom',
+    default='VROOM',
     help="""
 The vim servername (see :help clientserver).
 Use this to help vroom differentiate between vims if you want to run multiple
@@ -103,6 +103,12 @@ parser.add_argument(
 Keeps vim open after a vroom failure, allowing you to inspect vim's state.
 """)
 
+parser.add_argument(
+    '--neovim',
+    action='store_true',
+    help="""
+Run Neovim instead of Vim
+""")
 
 #
 # Timing
@@ -111,19 +117,23 @@ parser.add_argument(
     '-d',
     '--delay',
     type=float,
-    default=0.09,
+    # See Parse for the real default
+    default=-1,
     metavar='DELAY',
     help="""
 Delay after each vim command (in seconds).
+Default is 0.09 for Vim and 0.00 for Neovim
 """)
 
 parser.add_argument(
     '--shell-delay',
     type=float,
-    default=0.25,
+    # See Parse for the real default
+    default=-1,
     metavar='SHELL_DELAY',
     help="""
-Extra delay after a vim command that's expected to trigger a shell command.
+Extra delay (in seconds) after a vim command that's expected to trigger a shell command.
+Default is 0.25 for Vim and 0.00 for Neovim
 """)
 
 parser.add_argument(
@@ -133,7 +143,7 @@ parser.add_argument(
     default=0.5,
     metavar='STARTUPTIME',
     help="""
-How long to wait for vim to start (in seconds).
+How long to wait for vim to start (in seconds). This option is ignored for Neovim.
 """)
 
 #
@@ -279,6 +289,13 @@ def Parse(args):
 
   if args.out != sys.stdout:
     args.color = vroom.color.Colorless
+
+  if args.delay == -1:
+    # Default delay is 0.09 for Vim, 0 for Neovim
+    args.delay = 0 if args.neovim else 0.09
+  if args.shell_delay == -1:
+    # Default shell delay is 0.25 for Vim, 0 for Neovim
+    args.shell_delay = 0 if args.neovim else 0.25
 
   for dumper in ('dump_messages', 'dump_commands', 'dump_syscalls'):
     if getattr(args, dumper) is True:

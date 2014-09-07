@@ -112,7 +112,7 @@ class Manager(object):
     """
     self.Load(buffer)
     self._last_range = (len(self._data), len(self._data))
-    if not self._line:
+    if self._line is None:
       if self._data == [''] or not self._data:
         return
       msg = 'Misuse of @end: buffer has not been checked yet.'
