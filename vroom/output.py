@@ -204,7 +204,7 @@ class Logger(object):
     return True
 
   def Finalize(self, queue):
-    """Used to pre-process all messages after the the test and before display.
+    """Used to pre-process all messages after the test and before display.
 
     Args:
       queue: The message queue
@@ -574,7 +574,7 @@ def ErrorContextPrinter(header, empty, modifier=None, singleton=None):
   return WriteExtraData
 
 
-# Pylint isn't smart enough to notice that these are all generated funtions.
+# Pylint isn't smart enough to notice that these are all generated functions.
 ErrorMessageContext = ErrorContextPrinter(  # pylint: disable-msg=g-bad-name
     'Messages',
     'There were no messages.',
