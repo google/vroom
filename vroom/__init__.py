@@ -1,6 +1,13 @@
 """Patterns common to all vroom components."""
 
 
+def __read_version_txt():
+  import pkgutil
+  return pkgutil.get_data('vroom', 'VERSION.txt').strip()
+
+__version__ = __read_version_txt()
+
+
 def Specification(*numbered, **named):
   """Creates a specification type, useful for defining constants.
 
