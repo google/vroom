@@ -20,7 +20,7 @@ class Communicator(VimCommunicator):
         '-u', args.vimrc,
         '-c', 'set shell=' + args.shell,
         '-c', 'source %s' % CONFIGFILE]
-    env['NEOVIM_LISTEN_ADDRESS'] = args.servername
+    env['NVIM_LISTEN_ADDRESS'] = args.servername
     self.env = env
     self._cache = {}
 
