@@ -69,7 +69,7 @@ class Communicator(VimCommunicator):
     Raises:
       Quit: If vim quit unexpectedly.
     """
-    return self.conn.eval(expression)
+    return self.conn.eval(expression).decode('utf-8')
 
   def GetBufferLines(self, number):
     """Gets the lines in the requested buffer.
@@ -94,7 +94,7 @@ class Communicator(VimCommunicator):
       linecount = buf.get_length()
       lines = []
       for i in range(linecount):
-        lines.append(buf.get_line(i))
+        lines.append(buf.get_line(i).decode('utf-8'))
       self._cache[number] = lines
     return self._cache[number]
 
