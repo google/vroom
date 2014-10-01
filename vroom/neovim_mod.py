@@ -29,10 +29,7 @@ class Communicator(VimCommunicator):
       # Never started
       return
 
-    try:
-      self.conn.command('qa!')
-    except IOError:
-      pass
+    self.conn.quit()
 
   def Start(self):
     """Starts Neovim"""
@@ -42,7 +39,8 @@ class Communicator(VimCommunicator):
     while not os.path.exists(self.args.servername) \
             and time.time() - start_time < 5:
         time.sleep(0.01)
-    self.conn = neovim.connect(self.args.servername)
+    session = neovim.socket_session(self.args.servername)
+    self.conn = neovim.Nvim.from_session(session)
 
   def Communicate(self, command, extra_delay=0):
     """Sends a command to Neovim
@@ -55,7 +53,7 @@ class Communicator(VimCommunicator):
     """
     self.writer.Log(command)
     parsed_command = self.conn.replace_termcodes(command, True, True, True)
-    self.conn.feedkeys(parsed_command, '')
+    self.conn.feedkeys(parsed_command)
     self._cache = {}
     time.sleep(self.args.delay + extra_delay)
 
@@ -69,7 +67,7 @@ class Communicator(VimCommunicator):
     Raises:
       Quit: If vim quit unexpectedly.
     """
-    return self.conn.eval(expression).decode('utf-8')
+    return str(self.conn.eval(expression)).decode('utf-8')
 
   def GetBufferLines(self, number):
     """Gets the lines in the requested buffer.
@@ -83,18 +81,17 @@ class Communicator(VimCommunicator):
     """
     if number not in self._cache:
       if number is None:
-        buf = self.conn.get_current_buffer()
+        buf = self.conn.current.buffer
       else:
-        for i in range(len(self.conn.get_buffers())):
-          b = self.conn.buffers[i]
-          if b.get_number() == number:
+        for b in self.conn.buffers:
+          if b.number == number:
             buf = b
             break
 
-      linecount = buf.get_length()
+      linecount = len(buf)
       lines = []
       for i in range(linecount):
-        lines.append(buf.get_line(i).decode('utf-8'))
+        lines.append(buf[i].decode('utf-8'))
       self._cache[number] = lines
     return self._cache[number]
 
@@ -105,7 +102,7 @@ class Communicator(VimCommunicator):
       The cursor's line.
     """
     if 'line' not in self._cache:
-      lineno = self.conn.get_current_window().cursor[0]
+      lineno = self.conn.current.window.cursor[0]
       self._cache['line'] = int(lineno)
     return self._cache['line']
 
