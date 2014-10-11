@@ -21,6 +21,8 @@ class Communicator(VimCommunicator):
         '-c', 'set shell=' + args.shell,
         '-c', 'source %s' % CONFIGFILE]
     env['NVIM_LISTEN_ADDRESS'] = args.servername
+    # Set environment for shell.vroomfaker to know Neovim is being used
+    env['VROOM_NEOVIM'] = '1'
     self.env = env
     self._cache = {}
 
