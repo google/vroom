@@ -40,8 +40,12 @@ try:
   with open(controlfile, 'rb') as f:
     controls = pickle.load(f)
 
-  # Parse the user command out from vim's gibberish.
-  command, rebuild = vroom.vim.SplitCommand(sys.argv[2])
+  if os.getenv('VROOM_NEOVIM'):
+    # Neovim does not wrap commands, just pass then unchanged
+    command, rebuild = (sys.argv[2], lambda cmd: cmd)
+  else:
+    # Parse the user command out from vim's gibberish.
+    command, rebuild = vroom.vim.SplitCommand(sys.argv[2])
   logs.append(vroom.test.Received(command))
   handled = False
 
