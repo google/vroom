@@ -1,8 +1,10 @@
 """Distribution for vroom."""
+import codecs
 from distutils.core import setup
 import os.path
 
-with open(os.path.join(os.path.dirname(__file__), 'vroom/VERSION.txt')) as f:
+version_path = os.path.join(os.path.dirname(__file__), 'vroom/VERSION.txt')
+with codecs.open(version_path, 'r', 'utf-8') as f:
   version = f.read().strip()
 
 setup(
