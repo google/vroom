@@ -250,8 +250,10 @@ class Communicator(object):
     #
     # Note that this does not affect messages from the vim server process,
     # which should be matched using error codes as usual.
-    env = dict(self.env.items() +
-               [['LANGUAGE', 'en_US.UTF-8'], ['LC_ALL', 'en_US.UTF-8']])
+    env = self.env.copy()
+    env.update({
+      'LANGUAGE': 'en_US.UTF-8',
+      'LC_ALL': 'en_US.UTF-8'})
 
     out, err = subprocess.Popen(
         cmd,
