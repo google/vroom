@@ -1,13 +1,9 @@
-from vroom.vim import CONFIGFILE, VimscriptString
+from vroom.vim import CONFIGFILE
 from vroom.vim import Communicator as VimCommunicator
 import subprocess
 import time
 import neovim
 import os
-try:
-  from StringIO import StringIO
-except ImportError:
-  from io import StringIO
 
 class Communicator(VimCommunicator):
   """Object to communicate with a Neovim server."""
@@ -42,7 +38,7 @@ class Communicator(VimCommunicator):
             and time.time() - start_time < 5:
         time.sleep(0.01)
     session = neovim.socket_session(self.args.servername)
-    self.conn = neovim.Nvim.from_session(session)
+    self.conn = neovim.Nvim.from_session(session).with_hook(neovim.DecodeHook())
 
   def Communicate(self, command, extra_delay=0):
     """Sends a command to Neovim
@@ -69,7 +65,7 @@ class Communicator(VimCommunicator):
     Raises:
       Quit: If vim quit unexpectedly.
     """
-    return str(self.conn.eval(expression)).decode('utf-8')
+    return u'%s' % (self.conn.eval(expression),)
 
   def GetBufferLines(self, number):
     """Gets the lines in the requested buffer.
@@ -90,11 +86,7 @@ class Communicator(VimCommunicator):
             buf = b
             break
 
-      linecount = len(buf)
-      lines = []
-      for i in range(linecount):
-        lines.append(buf[i].decode('utf-8'))
-      self._cache[number] = lines
+      self._cache[number] = list(buf)
     return self._cache[number]
 
   def GetCurrentLine(self):
