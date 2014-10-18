@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """A fake shell, used by vroom to capture and control vim system calls.
 
 This executable is run once per shell command, and thus must do all of its
