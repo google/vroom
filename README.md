@@ -44,10 +44,18 @@ page for some strategies for getting the most out of vroom.
 
 The easiest way to install vroom is to cd into the vroom directory and run
 ```sh
-python setup.py build && sudo python setup.py install
+python3 setup.py build && sudo python3 setup.py install
 ```
 
-Vim syntax files for vroom can be found [here](https://github.com/google/vim-ft.vroom).
+You can also install
+[release packages](https://github.com/google/vroom/releases) from github. To
+build deb packages yourself, make sure you have a recent stdeb version with
+python 3 support installed.
+
+Vim 7.4.384 and later have built-in syntax support for the vroom filetype. You
+can install the standalone
+[ft-vroom plugin](https://github.com/google/vim-ft-vroom) for older versions of
+vim.
 
 ## Known issues
 
