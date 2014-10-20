@@ -1,4 +1,5 @@
 """Vroom vim management."""
+import ast
 import json
 # I'll make you a deal, pylint. I'll remove this if you upgrade to py3k.
 # pylint: disable-msg=g-import-not-at-top
@@ -6,10 +7,17 @@ try:
   from StringIO import StringIO
 except ImportError:
   from io import StringIO
+import re
 import subprocess
 import tempfile
 import time
 
+
+# Regex for quoted python string literal. From pyparsing.quotedString.reString.
+QUOTED_STRING_RE = re.compile(r'''
+  (?:"(?:[^"\n\r\\]|(?:"")|(?:\\x[0-9a-fA-F]+)|(?:\\.))*")|
+  (?:'(?:[^'\n\r\\]|(?:'')|(?:\\x[0-9a-fA-F]+)|(?:\\.))*')
+''', re.VERBOSE)
 
 # Vroom has been written such that this data *could* go into a separate .vim
 # file, and that would be great. However, python distutils (believe it or not)
@@ -53,6 +61,34 @@ function! VroomEnd()
   qa!
 endfunction
 """)
+
+
+def DeserializeVimValue(value_str):
+  """Return string representation of value literal from vim.
+
+  Args:
+    value_str: A serialized string representing a simple value literal. The
+        serialization format is just the output of the vimscript string() func.
+  Raises:
+    BadVimValue if the value could not be deserialized.
+  """
+  if not value_str:
+    return None
+  # Translate some vimscript idioms to python before evaling as python literal.
+  # Vimscript strings represent backslashes literally.
+  value_str = value_str.replace('\\', '\\\\').replace('\n', '\\n')
+  # Replace "''" inside strings with "\'".
+  def ToVimQuoteEscape(m):
+    val = m.group(0)
+    if val.startswith("'"):
+      return val[:1] + val[1:-1].replace("''", "\\'") + val[-1:]
+    else:
+      return val
+  value_str = re.sub(QUOTED_STRING_RE, ToVimQuoteEscape, value_str)
+  try:
+    return ast.literal_eval(value_str)
+  except SyntaxError:
+    raise BadVimValue(value_str)
 
 
 class Communicator(object):
@@ -125,19 +161,23 @@ class Communicator(object):
     Args:
       expression: The expression to ask for.
     Returns:
-      Vim's output (as a string).
+      Return value from vim, or None if vim had no output.
     Raises:
-      Quit: If vim quit unexpectedly.
+      Quit if vim quit unexpectedly.
+      BadVimValue if vim returns a value that can't be deserialized.
     """
     try:
-      return self.TryToSay([
+      out = self.TryToSay([
           'vim',
           '--servername', self.args.servername,
-          '--remote-expr', expression])
+          '--remote-expr', 'string(%s)' % expression])
     except ErrorOnExit as e:
       if e.error_text.startswith('E449:'):  # Invalid expression received
         raise InvalidExpression(expression)
       raise
+    # Vim adds a trailing newline to --remote-expr output if there isn't one
+    # already.
+    return DeserializeVimValue(out.rstrip())
 
   def GetCurrentLine(self):
     """Figures out what line the cursor is on.
@@ -148,7 +188,7 @@ class Communicator(object):
     if 'line' not in self._cache:
       lineno = self.Ask("line('.')")
       try:
-        self._cache['line'] = int(lineno)
+        self._cache['line'] = lineno
       except (ValueError, TypeError):
         raise ValueError("Vim lost the cursor, it thinks it's '%s'." % lineno)
     return self._cache['line']
@@ -166,7 +206,7 @@ class Communicator(object):
     if number not in self._cache:
       num = "'%'" if number is None else number
       cmd = "getbufline(%s, 1, '$')" % num
-      self._cache[number] = self.Ask(cmd).splitlines()
+      self._cache[number] = self.Ask(cmd)
     return self._cache[number]
 
   def GetMessages(self):
@@ -180,7 +220,8 @@ class Communicator(object):
     # load the buffer.) Cleans up --dump-commands a bit.
     if 'msg' not in self._cache:
       cmd = "VroomExecute('silent! messages')"
-      self._cache['msg'] = self.Ask(cmd).splitlines()
+      # Add trailing newline as workaround for http://bugs.python.org/issue7638.
+      self._cache['msg'] = (self.Ask(cmd) + '\n').splitlines()
     return self._cache['msg']
 
   def Clear(self):
@@ -391,3 +432,15 @@ class NoDisplay(Quit):
     else:
       display_context = 'unspecified display'
     return 'Vim failed to access {}'.format(display_context)
+
+
+class BadVimValue(Exception):
+  """Raised when vroom fails to deserialize a serialized value from vim."""
+
+  is_fatal = False
+
+  def __init__(self, value):
+    self.value = value
+
+  def __str__(self):
+    return 'Vroom failed to deserialize vim value {!r}'.format(self.value)

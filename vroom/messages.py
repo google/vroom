@@ -106,10 +106,18 @@ class Messenger(object):
         if vroom.test.Matches(desired, mode, message):
           self.writer.Log(vroom.test.Matched(desired, mode))
           break
+        # Consume unexpected blank if it's the last message. Vim adds spurious
+        # blank lines after leaving insert mode.
+        # This is done after checking for expected blank messages.
+        if message == '' and not unread:
+          break
         try:
           self.Unexpected(message, new)
         except MessageFailure as e:
           failures.append(e)
+    # Consume unexpected blank if it's the last message.
+    if unread and unread[-1] == '':
+      unread.pop(-1)
     for remaining in unread:
       try:
         self.Unexpected(remaining, new)

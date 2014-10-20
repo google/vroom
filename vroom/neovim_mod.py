@@ -41,13 +41,13 @@ class Communicator(VimCommunicator):
     self.conn = neovim.Nvim.from_session(session).with_hook(neovim.DecodeHook())
 
   def Communicate(self, command, extra_delay=0):
-    """Sends a command to Neovim
+    """Sends a command to Neovim.
+
+    Blocks forever if remote nvim quit unexpectedly.
 
     Args:
       command: The command to send.
       extra_delay: Delay in excess of --delay
-    Raises:
-      Quit: If vim quit unexpectedly.
     """
     self.writer.Log(command)
     parsed_command = self.conn.replace_termcodes(command, True, True, True)
@@ -58,14 +58,14 @@ class Communicator(VimCommunicator):
   def Ask(self, expression):
     """Asks vim for the result of an expression.
 
+    Blocks forever if remote nvim quit unexpectedly.
+
     Args:
       expression: The expression to ask for.
     Returns:
-      Vim's output (as a string).
-    Raises:
-      Quit: If vim quit unexpectedly.
+      Return value from vim.
     """
-    return u'%s' % (self.conn.eval(expression),)
+    return self.conn.eval(expression)
 
   def GetBufferLines(self, number):
     """Gets the lines in the requested buffer.
