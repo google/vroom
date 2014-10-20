@@ -135,6 +135,8 @@ class Messenger(object):
     elif self.env.message_strictness == STRICTNESS.ERRORS:
       if ERROR_GUESS.match(message):
         raise SuspectedError(message, new, self.vim.writer.Logs())
+    raise UnexpectedMessage(
+        message, new, self.vim.writer.Logs(), is_significant=False)
 
 
 class MessageFailure(vroom.test.Failure):
@@ -158,6 +160,13 @@ class MessageNotReceived(MessageFailure):
 class UnexpectedMessage(MessageFailure):
   """For when an unexpected message is found."""
   DESCRIPTION = 'Unexpected message:\n%(message)s'
+
+  def __init__(self, message, messages, commands=None, is_significant=True):
+    super(UnexpectedMessage, self).__init__(message, messages, commands)
+    self._is_significant = is_significant
+
+  def IsSignificant(self):
+    return self._is_significant
 
 
 class SuspectedError(MessageFailure):
