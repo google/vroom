@@ -52,12 +52,12 @@ class Vroom(object):
     if not self._command_queue:
       return
     self.env.buffer.Unload()
-    try:
-      for self._running_command in self._command_queue:
+    for self._running_command in self._command_queue:
+      try:
         self._running_command.Execute()
-    except vroom.test.Failure as e:
-      if e.IsSignificant():
-        raise
+      except vroom.test.Failure as e:
+        if e.IsSignificant():
+          raise
     self.ResetCommands()
 
   def __call__(self, filehandle):
