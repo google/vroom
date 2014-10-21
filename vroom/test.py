@@ -69,6 +69,14 @@ def Matches(request, mode, data):
 class Failure(Exception):
   """Raised when a test fails."""
 
+  def IsSignificant(self):
+    """Whether this failure is significant enough to report on its own.
+
+    Some failures are insignificant failures that should only be shown along
+    with significant errors to help troubleshoot. Example: Unexpected messages
+    in RELAXED mode aren't significant."""
+    return True
+
 
 class Failures(Failure):
   """Raised when multiple Failures occur."""
@@ -85,6 +93,9 @@ class Failures(Failure):
       else:
         flattened_failures.append(f)
     return flattened_failures
+
+  def IsSignificant(self):
+    return any(f.IsSignificant() for f in self.GetFlattenedFailures())
 
   def __str__(self):
     flattened_failures = self.GetFlattenedFailures()
