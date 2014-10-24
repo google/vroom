@@ -23,11 +23,11 @@ class Communicator(VimCommunicator):
     self._cache = {}
 
   def Quit(self):
-    if not hasattr(self, 'conn'):
+    if not hasattr(self, 'nvim'):
       # Never started
       return
 
-    self.conn.quit()
+    self.nvim.quit()
 
   def Start(self):
     """Starts Neovim"""
@@ -38,7 +38,10 @@ class Communicator(VimCommunicator):
             and time.time() - start_time < 5:
         time.sleep(0.01)
     session = neovim.socket_session(self.args.servername)
-    self.conn = neovim.Nvim.from_session(session).with_hook(neovim.DecodeHook())
+    # We keep 2 instances of Nvim, with and without automatic
+    # Unicode decoding, use the first if you need Unicode
+    self.nvim = neovim.Nvim.from_session(session)
+    self.nvim_unicode = self.nvim.with_hook(neovim.DecodeHook())
 
   def Communicate(self, command, extra_delay=0):
     """Sends a command to Neovim.
@@ -50,8 +53,8 @@ class Communicator(VimCommunicator):
       extra_delay: Delay in excess of --delay
     """
     self.writer.Log(command)
-    parsed_command = self.conn.replace_termcodes(command, True, True, True)
-    self.conn.feedkeys(parsed_command)
+    parsed_command = self.nvim.replace_termcodes(command, True, True, True)
+    self.nvim.feedkeys(parsed_command)
     self._cache = {}
     time.sleep(self.args.delay + extra_delay)
 
@@ -65,7 +68,7 @@ class Communicator(VimCommunicator):
     Returns:
       Return value from vim.
     """
-    return self.conn.eval(expression)
+    return self.nvim_unicode.eval(expression)
 
   def GetBufferLines(self, number):
     """Gets the lines in the requested buffer.
@@ -79,9 +82,9 @@ class Communicator(VimCommunicator):
     """
     if number not in self._cache:
       if number is None:
-        buf = self.conn.current.buffer
+        buf = self.nvim_unicode.current.buffer
       else:
-        for b in self.conn.buffers:
+        for b in self.nvim_unicode.buffers:
           if b.number == number:
             buf = b
             break
@@ -96,7 +99,7 @@ class Communicator(VimCommunicator):
       The cursor's line.
     """
     if 'line' not in self._cache:
-      lineno = self.conn.current.window.cursor[0]
+      lineno = self.nvim.current.window.cursor[0]
       self._cache['line'] = int(lineno)
     return self._cache['line']
 
