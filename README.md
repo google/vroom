@@ -57,6 +57,48 @@ can install the standalone
 [ft-vroom plugin](https://github.com/google/vim-ft-vroom) for older versions of
 vim.
 
+## Neovim mode
+
+By default, vroom uses vim to execute vroom files. You can instead invoke it
+with the `--neovim` flag to execute vroom files inside neovim.
+
+To use it, you need to install the neovim-mode dependencies:
+
+  * Install neovim for your platform according to the directions at
+    https://github.com/neovim/neovim/wiki/Installing.
+  * Install [neovim/python-client](https://github.com/neovim/python-client):
+    ```sh
+    sudo pip3 install neovim
+    ```
+
+## Travis CI
+
+You can configure your vim plugin's vroom files to be tested continuously in
+[Travis CI](https://travis-ci.org).
+
+Just create a .travis.yml file at the root of your repository. The particulars
+may vary for your plugin, but here's an example configuration:
+
+```YAML
+language: generic
+before_script:
+  # Install your desired version of vroom.
+  - wget https://github.com/google/vroom/releases/download/v0.12.0/vroom_0.12.0-1_all.deb
+  - sudo dpkg -i vroom_0.12.0-1_all.deb
+  # Install vim.
+  - sudo apt-get install vim-gnome
+  # Vroom's vim mode currently requires a running X server.
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
+  # If your plugin depends on maktaba, clone maktaba into a sibling directory.
+  - git clone https://github.com/google/vim-maktaba.git ../maktaba/
+script:
+  - vroom --crawl ./vroom/
+```
+
+It's also possible to test your plugin against neovim, but the recommended
+instructions are still being finalized. Details coming soon.
+
 ## Known issues
 
 Vroom uses vim as a server. Unfortunately, we don't yet have a reliable way to
