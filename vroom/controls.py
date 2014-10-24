@@ -66,10 +66,9 @@ def BufferWord(word):
 
   >>> BufferWord('2')
   2
-  >>> BufferWord('not-a-buffer')
-  Traceback (most recent call last):
-    ...
-  UnrecognizedWord: Unrecognized control word "not-a-buffer"
+  >>> try: BufferWord('not-a-buffer')
+  ... except UnrecognizedWord as e: e
+  UnrecognizedWord('Unrecognized control word "not-a-buffer"',)
 
   Args:
     word: The control string.
@@ -107,10 +106,9 @@ def RangeWord(word):
   >>> RangeWord('20,')[0]
   20
 
-  >>> RangeWord('farts')
-  Traceback (most recent call last):
-    ...
-  UnrecognizedWord: Unrecognized control word "farts"
+  >>> try: RangeWord('farts')
+  ... except UnrecognizedWord as e: e
+  UnrecognizedWord('Unrecognized control word "farts"',)
 
   Args:
     word: The word to parse.
@@ -145,10 +143,9 @@ def DelayWord(word):
   4.0
   >>> DelayWord('4.1s')
   4.1
-  >>> DelayWord('nope')
-  Traceback (most recent call last):
-    ...
-  UnrecognizedWord: Unrecognized control word "nope"
+  >>> try: DelayWord('nope')
+  ... except UnrecognizedWord as e: e
+  UnrecognizedWord('Unrecognized control word "nope"',)
 
   Args:
     word: The word to parse.
@@ -172,10 +169,9 @@ def ModeWord(word):
   True
   >>> ModeWord('verbatim') == MODE.VERBATIM
   True
-  >>> ModeWord('nope')
-  Traceback (most recent call last):
-    ...
-  UnrecognizedWord: Unrecognized control word "nope"
+  >>> try: ModeWord('nope')
+  ... except UnrecognizedWord as e: e
+  UnrecognizedWord('Unrecognized control word "nope"',)
 
   Args:
     word: The word to parse.
@@ -200,10 +196,9 @@ def MessageWord(word):
   True
   >>> MessageWord('GUESS-ERRORS') == vroom.messages.STRICTNESS.ERRORS
   True
-  >>> MessageWord('nope')
-  Traceback (most recent call last):
-    ...
-  UnrecognizedWord: Unrecognized control word "nope"
+  >>> try: MessageWord('nope')
+  ... except UnrecognizedWord as e: e
+  UnrecognizedWord('Unrecognized control word "nope"',)
 
   Args:
     word: The word to parse.
@@ -234,10 +229,9 @@ def SystemWord(word):
   True
   >>> SystemWord('RELAXED') == vroom.shell.STRICTNESS.RELAXED
   True
-  >>> SystemWord('nope')
-  Traceback (most recent call last):
-    ...
-  UnrecognizedWord: Unrecognized control word "nope"
+  >>> try: SystemWord('nope')
+  ... except UnrecognizedWord as e: e
+  UnrecognizedWord('Unrecognized control word "nope"',)
 
   Args:
     word: The word to parse.
@@ -272,10 +266,9 @@ def OutputChannelWord(word):
   True
   >>> OutputChannelWord('status') == vroom.shell.OUTCHANNEL.STATUS
   True
-  >>> OutputChannelWord('nope')
-  Traceback (most recent call last):
-    ...
-  UnrecognizedWord: Unrecognized control word "nope"
+  >>> try: OutputChannelWord('nope')
+  ... except UnrecognizedWord as e: e
+  UnrecognizedWord('Unrecognized control word "nope"',)
 
   Args:
     word: The word to parse.
@@ -326,15 +319,13 @@ def Parse(controls, *options):
   >>> (controls['buffer'], controls['delay'])
   (2, 1.0)
 
-  >>> Parse('1 2 3', OPTION.DELAY, OPTION.BUFFER)
-  Traceback (most recent call last):
-    ...
-  DuplicatedControl: Duplicated buffer control "3"
+  >>> try: Parse('1 2 3', OPTION.DELAY, OPTION.BUFFER)
+  ... except DuplicatedControl as e: e
+  DuplicatedControl('Duplicated buffer control "3"',)
 
-  >>> Parse('regex 4.02s', OPTION.MODE)
-  Traceback (most recent call last):
-    ...
-  UnrecognizedWord: Unrecognized control word "4.02s"
+  >>> try: Parse('regex 4.02s', OPTION.MODE)
+  ... except UnrecognizedWord as e: e
+  UnrecognizedWord('Unrecognized control word "4.02s"',)
 
   >>> Parse('STRICT', OPTION.MESSAGE_STRICTNESS)
   {'messages': 'STRICT'}

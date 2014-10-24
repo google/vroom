@@ -83,10 +83,9 @@ def ActionLine(line, state=None):
   ('hijack', 'I say...', ...)
   >>> ActionLine('  @clear')
   ('directive', 'clear', {})
-  >>> ActionLine('  @nope')
-  Traceback (most recent call last):
-    ...
-  ParseError: Unrecognized directive "nope"
+  >>> try: ActionLine('  @nope')
+  ... except vroom.ParseError as e: e
+  ParseError('Unrecognized directive "nope"',)
   >>> state = ParseState([])
   >>> ActionLine('  @macro (abc)', state)
   ('macro', None, None)
