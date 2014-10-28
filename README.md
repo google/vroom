@@ -67,9 +67,9 @@ To use it, you need to install the neovim-mode dependencies:
   * Install neovim for your platform according to the directions at
     https://github.com/neovim/neovim/wiki/Installing.
   * Install [neovim/python-client](https://github.com/neovim/python-client):
-    ```sh
-    sudo pip3 install neovim
-    ```
+```sh
+sudo pip3 install neovim
+```
 
 ## Travis CI
 
