@@ -15,12 +15,19 @@ version_path = os.path.join(os.path.dirname(__file__), 'vroom/VERSION.txt')
 with codecs.open(version_path, 'r', 'utf-8') as f:
   version = f.read().strip()
 
+LONG_DESCRIPTION = """
+Vroom is a system for functional testing and literate documentation for vim
+plugins.
+""".strip()
+
 setup(
     name='vroom',
     version=version,
     description='Launch your vimscript tests',
+    long_description=LONG_DESCRIPTION,
     author='Nate Soares',
     author_email='nate@so8r.es',
+    license='Apache 2.0',
     url='https://github.com/google/vroom',
     packages=['vroom'],
     scripts=[
@@ -30,7 +37,10 @@ setup(
     ],
     package_data={'vroom': ['VERSION.txt']},
     classifiers=[
+        'Development Status :: 3 - Alpha',
+        'License :: OSI Approved :: Apache Software License',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.4',
+        'Topic :: Software Development :: Testing',
     ],
 )
