@@ -26,3 +26,7 @@ script:
     else
       vroom $VROOM_ARGS --crawl ./examples/;
     fi
+matrix:
+  fast_finish: true
+  allow_failures:
+    - env: CI_TARGET=neovim VROOM_ARGS=--neovim
