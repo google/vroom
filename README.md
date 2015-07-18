@@ -65,19 +65,19 @@ the files under [examples/](examples/) and in particular
 
 <!-- Note for editors: the code spans below use NO-BREAK SPACE characters to
 render literal spaces -->
-| Symbol  | Description     | Action          | Example                   | Controls                 |
-| ------- | --------------- | --------------- | ------------------------- | ------------------------ |
-|         | unindented line | comment         | `This is a comment`       |                          |
-| `  > `  | gt leader       | input           | `  > iHello, world!<ESC>` | `(N.Ns)` (delay)         |
-| `  :`   | colon leader    | command         | `  :echomsg 'A message'`  | `(N.Ns)` (delay)         |
-| `  % `  | percent leader  | text            | `  % Sent to buffer`      | `(N.Ns)` (delay)         |
-| `  `    | 2-space indent  | output (buffer) | `  Compared to buffer`    | `(N)` (buf number)       |
-| `  & `  | ampersand       | output          | `  & :LiteralText`        | `(N)` (buf number)       |
-| `  ~ `  | tilde leader    | message         | `  ~ Echo'd!`             | match modes (verbatim)   |
-| `  |`   | pipe leader     | continuation    | `  |…TO A BIGGER HOUSE!`  |                          |
-| `  ! `  | bang leader     | system          | `  ! echo From Vim`       | match modes (regex)      |
-| `  $ `  | dollar leader   | hijack          | `  $ Nope, from vroom`    | output channels (stdout) |
-| `  @`   | at leader       | directive       | `  @clear`                | varies                   |
+| Symbol  | Description     | Action          | Example                   | Controls                             |
+| ------- | --------------- | --------------- | ------------------------- | ------------------------------------ |
+|         | unindented line | comment         | `This is a comment`       |                                      |
+| `  > `  | gt leader       | input           | `  > iHello, world!<ESC>` | `(N.Ns)` (delay)                     |
+| `  :`   | colon leader    | command         | `  :echomsg 'A message'`  | `(N.Ns)` (delay)                     |
+| `  % `  | percent leader  | text            | `  % Sent to buffer`      | `(N.Ns)` (delay)                     |
+| `  `    | 2-space indent  | output (buffer) | `  Compared to buffer`    | `(N)` (buf number)                   |
+| `  & `  | ampersand       | output          | `  & :LiteralText`        | `(N)` (buf number)                   |
+| `  ~ `  | tilde leader    | message         | `  ~ Echo'd!`             | match modes<br>(default: verbatim)   |
+| `  |`   | pipe leader     | continuation    | `  |…TO A BIGGER HOUSE!`  |                                      |
+| `  ! `  | bang leader     | system          | `  ! echo From Vim`       | match modes<br>(default: regex)      |
+| `  $ `  | dollar leader   | hijack          | `  $ Nope, from vroom`    | output channels<br>(default: stdout) |
+| `  @`   | at leader       | directive       | `  @clear`                | varies                               |
 
 Special controls:
 
