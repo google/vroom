@@ -57,6 +57,47 @@ can install the standalone
 [ft-vroom plugin](https://github.com/google/vim-ft-vroom) for older versions of
 vim.
 
+## Vroom cheat sheet
+
+Below is a table of the special symbols and conventions vroom recognizes. See
+the files under [examples/](examples/) and in particular
+[examples/basics.vroom](examples/basics.vroom) for explanations.
+
+<!-- Note for editors: the code spans below use NO-BREAK SPACE characters to
+render literal spaces -->
+| Symbol  | Description     | Action          | Example                   | Controls                             |
+| ------- | --------------- | --------------- | ------------------------- | ------------------------------------ |
+|         | unindented line | comment         | `This is a comment`       |                                      |
+| `  > `  | gt leader       | input           | `  > iHello, world!<ESC>` | `(N.Ns)` (delay)                     |
+| `  :`   | colon leader    | command         | `  :echomsg 'A message'`  | `(N.Ns)` (delay)                     |
+| `  % `  | percent leader  | text            | `  % Sent to buffer`      | `(N.Ns)` (delay)                     |
+| `  `    | 2-space indent  | output (buffer) | `  Compared to buffer`    | `(N)` (buf number)                   |
+| `  & `  | ampersand       | output          | `  & :LiteralText`        | `(N)` (buf number)                   |
+| `  ~ `  | tilde leader    | message         | `  ~ Echo'd!`             | match modes<br>(default: verbatim)   |
+| `  |`   | pipe leader     | continuation    | `  |…TO A BIGGER HOUSE!`  |                                      |
+| `  ! `  | bang leader     | system          | `  ! echo From Vim`       | match modes<br>(default: regex)      |
+| `  $ `  | dollar leader   | hijack          | `  $ Nope, from vroom`    | output channels<br>(default: stdout) |
+| `  @`   | at leader       | directive       | `  @clear`                | varies                               |
+
+Special controls:
+
+  * match modes (for message and system): `(verbatim)`, `(glob)`, `(regex)`
+  * output channels (for hijack): `(stdout)`, `(stderr)`, `(status)`, `(command)`
+
+Vroom also supports several built-in directives. See
+[examples/directives.vroom](examples/directives.vroom) and
+[examples/macros.vroom](examples/macros.vroom) for explanations.
+
+Directives:
+
+  * `@clear` — Clear buffer contents (also triggered by 3 blank vroom lines).
+  * `@end` — Ensure buffer matching reached end of buffer lines.
+  * `@messages` — Override strictness for unexpected messages.
+  * `@system` — Override strictness for unexpected system calls.
+  * `@macro` — Define vroom macro.
+  * `@endmacro` — End vroom macro and resume normal vroom processing.
+  * `@do` — Invoke vroom macro defined with `@macro`.
+
 ## Neovim mode
 
 By default, vroom uses vim to execute vroom files. You can instead invoke it
