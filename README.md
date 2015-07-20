@@ -42,6 +42,10 @@ page for some strategies for getting the most out of vroom.
 
 ## Installation
 
+Note that Vroom requires a version of vim built with the `+clientserver`
+option (run `vim --version` to check).  See `:help clientserver` for
+additional requirements.
+
 The easiest way to install vroom is to cd into the vroom directory and run
 ```sh
 python3 setup.py build && sudo python3 setup.py install
