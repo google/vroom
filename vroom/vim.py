@@ -1,12 +1,7 @@
 """Vroom vim management."""
 import ast
+from io import StringIO
 import json
-# I'll make you a deal, pylint. I'll remove this if you upgrade to py3k.
-# pylint: disable-msg=g-import-not-at-top
-try:
-  from StringIO import StringIO
-except ImportError:
-  from io import StringIO
 import re
 import subprocess
 import tempfile
