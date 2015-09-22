@@ -12,6 +12,8 @@ import vroom.shell
 import vroom.test
 import vroom.vim
 
+from vroom.result import Result
+
 # Pylint is not smart enough to notice that all the exceptions here inherit from
 # vroom.test.Failure, which is a standard Exception.
 # pylint: disable-msg=nonstandard-exception
@@ -53,11 +55,9 @@ class Vroom(object):
       return
     self.env.buffer.Unload()
     for self._running_command in self._command_queue:
-      try:
-        self._running_command.Execute()
-      except vroom.test.Failure as e:
-        if e.IsSignificant():
-          raise
+      result = self._running_command.Execute()
+      if result.IsError() and result.value.IsSignificant():
+          raise result.value
     self.ResetCommands()
 
   def __call__(self, filehandle):

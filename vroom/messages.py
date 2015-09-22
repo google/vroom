@@ -6,6 +6,8 @@ import vroom
 import vroom.controls
 import vroom.test
 
+from vroom.result import Result
+
 # Pylint is not smart enough to notice that all the exceptions here inherit from
 # vroom.test.Failure, which is a standard Exception.
 # pylint: disable-msg=nonstandard-exception
@@ -83,8 +85,10 @@ class Messenger(object):
       old: What the messages were before the command.
       new: What the messages were after the command.
       expectations: What the command was supposed to message about.
-    Raises:
-      vroom.test.Failures: If an message-related failures were detected.
+    Returns:
+      Result.Error(vroom.test.Failures[MessageFailure]):
+          If any message-related failures were detected.
+      Result.Result(True): Otherwise
     """
     if StartsWithBuiltinMessages(old) and StartsWithBuiltinMessages(new):
       old = StripBuiltinMessages(old)
@@ -125,7 +129,9 @@ class Messenger(object):
         failures.append(e)
 
     if failures:
-      raise vroom.test.Failures(failures)
+      return Result.Error(vroom.test.Failures(failures))
+    else:
+      return Result.Result(True)
 
   def Unexpected(self, message, new):
     """Handles an unexpected message."""
