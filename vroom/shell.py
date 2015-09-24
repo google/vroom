@@ -103,7 +103,7 @@ class Communicator(object):
     Returns:
       Result.Error(vroom.test.Failures[FakeShellFailure]):
           If any shell failures were detected.
-      Result.Result(True): Otherwise.
+      Result.Success(): Otherwise.
     Raises:
       FakeShellNotWorking: If it can't load the shell file.
     """
@@ -141,7 +141,7 @@ class Communicator(object):
     if failures:
       return Result.Error(vroom.test.Failures(failures))
     else:
-      return Result.Result(True)
+      return Result.Success()
 
 
 class Hijack(object):

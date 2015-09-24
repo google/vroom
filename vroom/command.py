@@ -48,7 +48,7 @@ class Command(object):
   def Execute(self):
     """Executes the command and verifies all checks."""
     if not any((self.command, self._mexpectations, self._syspectations)):
-      return Result.Result(True)
+      return Result.Success()
 
     self.env.shell.Control(self._syspectations)
     oldmessages = self.env.vim.GetMessages()
@@ -76,4 +76,4 @@ class Command(object):
     if failures:
       return Result.Error(vroom.test.Failures(failures))
     else:
-      return Result.Result(True)
+      return Result.Success()

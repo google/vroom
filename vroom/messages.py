@@ -88,7 +88,7 @@ class Messenger(object):
     Returns:
       Result.Error(vroom.test.Failures[MessageFailure]):
           If any message-related failures were detected.
-      Result.Result(True): Otherwise
+      Result.Success(): Otherwise
     """
     if StartsWithBuiltinMessages(old) and StartsWithBuiltinMessages(new):
       old = StripBuiltinMessages(old)
@@ -131,7 +131,7 @@ class Messenger(object):
     if failures:
       return Result.Error(vroom.test.Failures(failures))
     else:
-      return Result.Result(True)
+      return Result.Success()
 
   def Unexpected(self, message, new):
     """Handles an unexpected message."""
