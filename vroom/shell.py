@@ -11,6 +11,8 @@ import vroom
 import vroom.controls
 import vroom.test
 
+from vroom.result import Result
+
 # Pylint is not smart enough to notice that all the exceptions here inherit from
 # vroom.test.Failure, which is a standard Exception.
 # pylint: disable-msg=nonstandard-exception
@@ -98,9 +100,12 @@ class Communicator(object):
   def Verify(self):
     """Checks that system output was caught and handled satisfactorily.
 
+    Returns:
+      Result.Error(vroom.test.Failures[FakeShellFailure]):
+          If any shell failures were detected.
+      Result.Success(): Otherwise.
     Raises:
       FakeShellNotWorking: If it can't load the shell file.
-      vroom.test.Failures: If there are other failures.
     """
     # Copy any new logs into the logger.
     logs = Load(self.log_filename)
@@ -134,7 +139,9 @@ class Communicator(object):
         failures.append(UnexpectedSystemCalls(logs, commands_logs))
 
     if failures:
-      raise vroom.test.Failures(failures)
+      return Result.Error(vroom.test.Failures(failures))
+    else:
+      return Result.Success()
 
 
 class Hijack(object):

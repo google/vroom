@@ -14,6 +14,7 @@ the checks and responses attached to it.
 """
 import vroom.test
 
+from vroom.result import Result
 
 class Command(object):
   """Holds a vim command and records all checks requiring verification."""
@@ -47,7 +48,8 @@ class Command(object):
   def Execute(self):
     """Executes the command and verifies all checks."""
     if not any((self.command, self._mexpectations, self._syspectations)):
-      return
+      return Result.Success()
+
     self.env.shell.Control(self._syspectations)
     oldmessages = self.env.vim.GetMessages()
     if self.lineno:
@@ -61,21 +63,17 @@ class Command(object):
     failures = []
     # Verify the message list.
     newmessages = self.env.vim.GetMessages()
-    try:
-      self.env.messenger.Verify(oldmessages, newmessages, self._mexpectations)
-    # Don't worry, pylint. The exception will be re-raised. We need to make sure
-    # that we catch code errors as well as test failures here. We don't catch
-    # BaseException, so the program can still quit if it needs to.
-    # pylint: disable-msg=broad-except
-    except Exception as failure:
-      failures.append(failure)
+    result = self.env.messenger.Verify(
+        oldmessages, newmessages, self._mexpectations)
+    if result.IsError():
+      failures.append(result.value)
+
     # Verify the shell.
-    try:
-      self.env.shell.Verify()
-    # See above.
-    # pylint: disable-msg=broad-except
-    except Exception as failure:
-      failures.append(failure)
-    # Wrap the list of failures in vroom.test.Failures and raise.
+    result = self.env.shell.Verify()
+    if result.IsError():
+      failures.append(result.value)
+
     if failures:
-      raise vroom.test.Failures(failures)
+      return Result.Error(vroom.test.Failures(failures))
+    else:
+      return Result.Success()
