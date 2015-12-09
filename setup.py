@@ -1,6 +1,8 @@
 """Distribution for vroom."""
 import codecs
 from distutils.core import setup
+import subprocess
+import platform
 import os.path
 import sys
 
@@ -10,6 +12,16 @@ import sys
 if sys.version_info[0] < 3:
   sys.exit('ERROR: Python < 3 is unsupported.')
 
+platform.system()
+if platform.system == "Darwin":
+    subprocess.call("brew install python3")
+    print "Mac OS detected"
+elif platform.system == "Windows"
+    print "Windows OS detected"
+elif platform.system == "Linux"
+    print "Linux OS detected"
+else:
+    print "Unknown OS"
 
 version_path = os.path.join(os.path.dirname(__file__), 'vroom/VERSION.txt')
 with codecs.open(version_path, 'r', 'utf-8') as f:
