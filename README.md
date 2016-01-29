@@ -52,7 +52,7 @@ If you're on Ubuntu or Debian, you can install
 [release packages](https://github.com/google/vroom/releases) from GitHub.
 
 Otherwise, the easiest way to install vroom is to clone the vroom repository
-from Github, cd into the vroom directory, and run
+from GitHub, cd into the vroom directory, and run
 ```sh
 python3 setup.py build && sudo python3 setup.py install
 ```
