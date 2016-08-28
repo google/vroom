@@ -7,7 +7,7 @@ env:
   matrix:
     - CI_TARGET=pytests
     - CI_TARGET=vim
-    - CI_TARGET=neovim VROOM_ARGS=--neovim
+    - CI_TARGET=neovim VROOM_ARGS="--neovim --skip messages.vroom directives.vroom system.vroom"
 matrix:
   fast_finish: true
   allow_failures:
