@@ -17,8 +17,6 @@ class Communicator(VimCommunicator):
         '-c', 'set shell=' + args.shell,
         '-c', 'source %s' % CONFIGFILE]
     env['NVIM_LISTEN_ADDRESS'] = args.servername
-    # Set environment for shell.vroomfaker to know Neovim is being used
-    env['VROOM_NEOVIM'] = '1'
     self.env = env
     self._cache = {}
 
@@ -37,11 +35,7 @@ class Communicator(VimCommunicator):
     while not os.path.exists(self.args.servername) \
             and time.time() - start_time < 5:
         time.sleep(0.01)
-    session = neovim.socket_session(self.args.servername)
-    # We keep 2 instances of Nvim, with and without automatic
-    # Unicode decoding, use the first if you need Unicode
-    self.nvim = neovim.Nvim.from_session(session)
-    self.nvim_unicode = self.nvim.with_hook(neovim.DecodeHook())
+    self.nvim = neovim.attach('socket', path=self.args.servername)
 
   def Communicate(self, command, extra_delay=0):
     """Sends a command to Neovim.
@@ -68,7 +62,7 @@ class Communicator(VimCommunicator):
     Returns:
       Return value from vim.
     """
-    return self.nvim_unicode.eval(expression)
+    return self.nvim.eval(expression)
 
   def GetBufferLines(self, number):
     """Gets the lines in the requested buffer.
@@ -82,9 +76,9 @@ class Communicator(VimCommunicator):
     """
     if number not in self._cache:
       if number is None:
-        buf = self.nvim_unicode.current.buffer
+        buf = self.nvim.current.buffer
       else:
-        for b in self.nvim_unicode.buffers:
+        for b in self.nvim.buffers:
           if b.number == number:
             buf = b
             break
