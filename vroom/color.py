@@ -15,6 +15,19 @@ try:
   RESET = subprocess.check_output(['tput', 'sgr0']).decode('utf-8')
 except subprocess.CalledProcessError:
   COLORED = False
+  # Placeholders for code that tries to map things onto terminal colors.
+  # These will be unused anyway if COLORED=False, and empty string would be
+  # "no-op" color code for any code that did end up using these values.
+  BOLD = ''
+  RED = ''
+  GREEN = ''
+  YELLOW = ''
+  BLUE = ''
+  VIOLET = ''
+  TEAL = ''
+  WHITE = ''
+  BLACK = ''
+  RESET = ''
 else:
   COLORED = True
 
