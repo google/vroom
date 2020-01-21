@@ -202,7 +202,7 @@ class Hijack(object):
       except re.error as e:
         raise vroom.ParseError("Can't match command. Invalid regex. %s'" % e)
     else:
-      match_regex = re.compile(r'.*')
+      match_regex = re.compile(r'^.*$')
 
     # The actual response won't be exactly like the internal response, because
     # we've got to do some regex group binding magic.
