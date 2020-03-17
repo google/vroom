@@ -16,16 +16,17 @@ class Result(namedtuple('Result', ['status', 'value'])):
 
   @classmethod
   def Result(cls, value):
-    return super(Result, cls).__new__(cls, status = ResultType.result, value = value)
+    return super(Result, cls).__new__(
+        cls, status=ResultType.result, value=value)
 
   @classmethod
   def Error(cls, value):
-    return super(Result, cls).__new__(cls, status = ResultType.error, value = value)
+    return super(Result, cls).__new__(cls, status=ResultType.error, value=value)
 
   @classmethod
   def Success(cls):
     """Used to indicate success when the actual value is irrelevant."""
-    return super(Result, cls).__new__(cls, status = ResultType.result, value = True)
+    return super(Result, cls).__new__(cls, status=ResultType.result, value=True)
 
   def IsError(self):
     return self.status is ResultType.error

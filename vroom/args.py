@@ -11,12 +11,11 @@ import vroom.color
 import vroom.messages
 import vroom.shell
 
-
 parser = argparse.ArgumentParser(
     description='Vroom: launch your tests.',
     formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-parser.add_argument('--version', action='version',
-    version='%(prog)s ' + vroom.__version__)
+parser.add_argument(
+    '--version', action='version', version='%(prog)s ' + vroom.__version__)
 
 
 class DirectoryArg(argparse.Action):

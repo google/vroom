@@ -63,8 +63,10 @@ class Writer(object):
     Args:
       file: An alternate file handle to write to. Default None.
     """
-    self.actions.Print(self._filename, color=(
-        vroom.color.BOLD, vroom.color.TEAL), file=file)
+    self.actions.Print(
+        self._filename,
+        color=(vroom.color.BOLD, vroom.color.TEAL),
+        file=file)
     self.actions.Print('', verbose=True, file=file)
     self.actions.Write(self._filename, file=file)
     extra = self.messages.Write(self._filename, file=file)
@@ -73,8 +75,9 @@ class Writer(object):
     self.actions.Print('', file=file, verbose=None if extra else True)
     stats = self.Stats()
     plural = '' if stats['total'] == 1 else 's'
-    self.actions.Print('Ran %d test%s in %s.' % (
-        stats['total'], plural, self._filename), end=' ')
+    self.actions.Print(
+        'Ran %d test%s in %s.' % (stats['total'], plural, self._filename),
+        end=' ')
     self.actions.PutStat(stats, STATUS.PASS, '%d passing', file=file)
     self.actions.PutStat(stats, STATUS.ERROR, '%d errored', file=file)
     self.actions.PutStat(stats, STATUS.FAIL, '%d failed', file=file, end='.\n')

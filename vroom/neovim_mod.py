@@ -34,7 +34,7 @@ class Communicator(VimCommunicator):
     # Wait at most 5s for the Neovim socket
     while not os.path.exists(self.args.servername) \
             and time.time() - start_time < 5:
-        time.sleep(0.01)
+      time.sleep(0.01)
     self.nvim = neovim.attach('socket', path=self.args.servername)
 
   def Communicate(self, command, extra_delay=0):
@@ -102,4 +102,4 @@ class Communicator(VimCommunicator):
     VimCommunicator.Kill(self)
 
     if os.path.exists(self.args.servername):
-        os.remove(self.args.servername)
+      os.remove(self.args.servername)

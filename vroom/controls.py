@@ -218,8 +218,7 @@ def MessageWord(word):
   # Pylint, brilliant as usual, thinks that this line redefines 'vroom'.
   # pylint: disable-msg=redefined-outer-name
   import vroom.messages  # pylint: disable-msg=g-import-not-at-top
-  regex = re.compile(
-      r'^(%s)$' % '|'.join(vroom.messages.STRICTNESS.Values()))
+  regex = re.compile(r'^(%s)$' % '|'.join(vroom.messages.STRICTNESS.Values()))
   match = regex.match(word)
   if match:
     return word
@@ -252,8 +251,7 @@ def SystemWord(word):
   # Pylint, brilliant as usual, thinks that this line redefines 'vroom'.
   # pylint: disable-msg=redefined-outer-name
   import vroom.shell  # pylint: disable-msg=g-import-not-at-top
-  regex = re.compile(
-      r'^(%s)$' % '|'.join(vroom.shell.STRICTNESS.Values()))
+  regex = re.compile(r'^(%s)$' % '|'.join(vroom.shell.STRICTNESS.Values()))
   match = regex.match(word)
   if match:
     return word
@@ -290,8 +288,7 @@ def OutputChannelWord(word):
   # Pylint, brilliant as usual, thinks that this line redefines 'vroom'.
   # pylint: disable-msg=redefined-outer-name
   import vroom.shell  # pylint: disable-msg=g-import-not-at-top
-  regex = re.compile(
-      r'^(%s)$' % '|'.join(vroom.shell.OUTCHANNEL.Values()))
+  regex = re.compile(r'^(%s)$' % '|'.join(vroom.shell.OUTCHANNEL.Values()))
   match = regex.match(word)
   if match:
     return word

@@ -129,8 +129,7 @@ class Communicator(object):
       missed = controls[0]
       if missed.expectation:
         failures.append(SystemNotCalled(logs, controls, commands_logs))
-      failures.append(NoChanceForResponse(
-          logs, missed, commands_logs))
+      failures.append(NoChanceForResponse(logs, missed, commands_logs))
 
     # Check for unexpected calls, if they user is into that.
     if self.vroom_env.system_strictness == STRICTNESS.STRICT:
@@ -327,5 +326,5 @@ class NoChanceForResponse(FakeShellFailure):
   DESCRIPTION = 'Got no chance to inject response: \n%s'
 
   def __init__(self, logs, response, commands):
-    super(NoChanceForResponse, self).__init__(
-        logs, commands, self.DESCRIPTION % response)
+    super(NoChanceForResponse, self).__init__(logs, commands,
+                                              self.DESCRIPTION % response)

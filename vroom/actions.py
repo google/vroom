@@ -1,6 +1,5 @@
-import collections
-
 """Vroom action parsing (actions are different types of vroom lines)."""
+import collections
 import vroom
 import vroom.controls
 
@@ -173,11 +172,11 @@ def ActionLine(line, state=None):
     if directive == DIRECTIVE.END:
       return (ACTION.DIRECTIVE, directive, Controls(BUFFER_OPTIONS))
     elif directive == DIRECTIVE.MESSAGES:
-      return (ACTION.DIRECTIVE, directive, Controls(
-          (vroom.controls.OPTION.MESSAGE_STRICTNESS,)))
+      return (ACTION.DIRECTIVE, directive,
+              Controls((vroom.controls.OPTION.MESSAGE_STRICTNESS,)))
     elif directive == DIRECTIVE.SYSTEM:
-      return (ACTION.DIRECTIVE, directive, Controls(
-          (vroom.controls.OPTION.SYSTEM_STRICTNESS,)))
+      return (ACTION.DIRECTIVE, directive,
+              Controls((vroom.controls.OPTION.SYSTEM_STRICTNESS,)))
     elif directive == DIRECTIVE.MACRO:
       if state.macro_name:
         raise vroom.ParseError("Nested macro definitions aren't allowed")
@@ -296,7 +295,7 @@ class ParseState(object):
     self.macros = {}
     self.lineno = -1
     self.lines = collections.deque(
-      (line, lineno) for lineno, line in enumerate(lines))
+        (line, lineno) for lineno, line in enumerate(lines))
 
   def NextLine(self):
     self.lineno += 1

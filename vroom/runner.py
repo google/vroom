@@ -57,7 +57,7 @@ class Vroom(object):
     for self._running_command in self._command_queue:
       result = self._running_command.Execute()
       if result.IsError() and result.value.IsSignificant():
-          raise result.value
+        raise result.value
     self.ResetCommands()
 
   def __call__(self, filehandle):
