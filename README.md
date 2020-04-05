@@ -2,6 +2,8 @@
 
 ![Vroom](/images/vroom_logo.png?raw=true)
 
+![usage screencast](/images/usage_screencast.gif)
+
 _**Vroom is experimental.** There are still some issues with vim that we
 haven't figured out how to work around. We reserve the right to make backwards
 incompatible changes in order to address these._
