@@ -92,7 +92,7 @@ render literal spaces -->
 | `  `    | 2-space indent  | output (buffer) | `  Compared to buffer`    | `(N)` (buf number)                   |
 | `  & `  | ampersand       | output          | `  & :LiteralText`        | `(N)` (buf number)                   |
 | `  ~ `  | tilde leader    | message         | `  ~ Echo'd!`             | match modes<br>(default: verbatim)   |
-| `  |`   | pipe leader     | continuation    | `  |…TO A BIGGER HOUSE!`  |                                      |
+| `  \|`  | pipe leader     | continuation    | `  \|…TO A BIGGER HOUSE!` |                                      |
 | `  ! `  | bang leader     | system          | `  ! echo From Vim`       | match modes<br>(default: regex)      |
 | `  $ `  | dollar leader   | hijack          | `  $ Nope, from vroom`    | output channels<br>(default: stdout) |
 | `  @`   | at leader       | directive       | `  @clear`                | varies                               |
