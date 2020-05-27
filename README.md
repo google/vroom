@@ -44,6 +44,20 @@ See the
 [Tips and Tricks page](https://github.com/google/vroom/wiki/Tips-and-Tricks)
 page for some strategies for getting the most out of vroom.
 
+## Running Vroom
+
+* With native vim (must have `+clientserver` enabled):
+
+  `vroom --crawl --servername=FOO`
+
+* With neovim (must have installed both neovim and neovim python plugin):
+
+  `vroom --crawl --neovim --servername=FOO`
+
+* Without running setup.py and with neovim, assimng curdir=vroom repo root:
+
+  `PYTHONPATH=$PWD python3 vroom/__main__.py --neovim --crawl --servername=FOO`
+
 ## Installation
 
 Note that Vroom requires a version of vim built with the `+clientserver`
