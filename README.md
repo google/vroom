@@ -44,19 +44,37 @@ See the
 [Tips and Tricks page](https://github.com/google/vroom/wiki/Tips-and-Tricks)
 page for some strategies for getting the most out of vroom.
 
-## Running Vroom
+## Usage
 
-* With native vim (must have `+clientserver` enabled):
+Vroom is invoked from the command-line on `.vroom` files. Here are some
+examples of usage:
 
-  `vroom --crawl --servername=FOO`
+* Running a single file, native vim runner (must have `+clientserver` enabled):
+
+  ```sh
+  vroom myplugin/vroom/somefile.vroom --servername=FOO
+  ```
+
+* With native vim, finding files below current directory:
+
+  ```sh
+  vroom --crawl --servername=FOO`
+  ```
 
 * With neovim (must have installed both neovim and neovim python plugin):
 
-  `vroom --crawl --neovim --servername=FOO`
+  ```sh
+  vroom --crawl --neovim --servername=FOO
+  ```
 
-* Without running setup.py and with neovim, assimng curdir=vroom repo root:
+* Without running setup.py and with neovim, assuming curdir=vroom repo root:
 
-  `PYTHONPATH=$PWD python3 vroom/__main__.py --neovim --crawl --servername=FOO`
+  ```sh
+  PYTHONPATH=$PWD python3 vroom/__main__.py --neovim --crawl --servername=FOO`
+  ```
+
+See `vroom --help` and https://github.com/google/vroom/wiki for more info on
+usage.
 
 ## Installation
 
@@ -77,17 +95,6 @@ Vim 7.4.384 and later have built-in syntax support for the vroom filetype. You
 can install the standalone
 [ft-vroom plugin](https://github.com/google/vim-ft-vroom) for older versions of
 vim.
-
-## Usage
-
-Vroom is invoked from the command-line on `.vroom` files.
-
-```sh
-vroom myplugin/vroom/somefile.vroom
-```
-
-See `vroom --help` and https://github.com/google/vroom/wiki for more info on
-usage.
 
 ## Vroom cheat sheet
 
