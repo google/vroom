@@ -92,8 +92,12 @@ class Communicator(object):
   def __init__(self, args, env, writer):
     self.writer = writer.commands
     self.args = args
+    # The order of switches matters. '--clean' will prevent vim from loading any
+    # plugins from ~/.vim/, but it also sets '-u DEFAULTS'. We supply '-u' after
+    # to force vim to take our '-u' value (while still avoiding plugins).
     self.start_command = [
         'vim',
+        '--clean',
         '-u', args.vimrc,
         '--servername', args.servername,
         '-c', 'set shell=' + args.shell,
@@ -120,6 +124,13 @@ class Communicator(object):
     # still has a _vim attribute it can query for details.
     self.process = subprocess.Popen(self.start_command, env=self.env)
     time.sleep(self.args.startuptime)
+    if self.process.poll() is not None and self.process.poll() != 0:
+      # If vim exited this quickly, it probably means we passed a switch it
+      # doesn't recognize. Try again without the '--clean' switch since this is
+      # new in 8.0.1554+.
+      self.start_command.remove('--clean')
+      self.process = subprocess.Popen(self.start_command, env=self.env)
+      time.sleep(self.args.startuptime)
 
   def _IsCurrentDisplayUsable(self):
     """Check whether vim fails using the current configured display."""
