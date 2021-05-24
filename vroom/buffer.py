@@ -65,7 +65,7 @@ class Manager(object):
     # No need to decrement; vroom ranges are inclusive and vim 1-indexes.
     end = (start + 1) if end is None else end(start + 1)
     # End = 0 means check till end of buffer.
-    end = len(self._data) if end is 0 else end
+    end = len(self._data) if end == 0 else end
     # If there's an error, they'll want to know what we were looking at.
     self._last_range = (start, end)
 
