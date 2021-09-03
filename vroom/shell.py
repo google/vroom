@@ -285,7 +285,7 @@ class Hijack(object):
     return out.rstrip('\n')
 
 
-class FakeShellNotWorking(Exception):
+class FakeShellNotWorking(vroom.test.Failure):
   """Called when the fake shell is not working."""
 
   def __init__(self, errors):
@@ -293,7 +293,8 @@ class FakeShellNotWorking(Exception):
     super(FakeShellNotWorking, self).__init__()
 
   def __str__(self):
-    return 'The fake shell is not working as anticipated.'
+    errors_description = '\n'.join(list(map(str, self.shell_errors)))
+    return 'The fake shell is not working as anticipated:\n' + errors_description
 
 
 class FakeShellFailure(vroom.test.Failure):
