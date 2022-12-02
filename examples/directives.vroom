@@ -30,6 +30,8 @@ you want to start anew.
 Normally, you *must* catch error messages, or vroom complains (unless you've
 tweaked the --message-strictness flag).
 
+  :set cmdheight=99
+
   :throw 'I broke something!'
   ~ Error detected while processing * (glob)
   ~ E605: Exception not caught: * (glob)
