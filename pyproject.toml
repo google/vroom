@@ -3,10 +3,10 @@ requires = ["setuptools>=61.2"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "vroom"
+name = "vim-vroom"
 authors = [{name = "Nate Soares", email = "nate@so8r.es"}]
 readme = "README.md"
-license = { text = "MIT" }
+license = { text = "Apache 2.0" }
 description = "Launch your vimscript tests"
 requires-python = ">= 3.4"
 classifiers = [
