@@ -1,5 +1,7 @@
 include README.md
-include vroom/VERSION.txt
+exclude .git*
 
 graft examples/
 graft images/
+
+prune .git*
