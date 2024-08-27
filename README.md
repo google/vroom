@@ -1,14 +1,12 @@
 # Vroom: Launch vim tests
 
-![Vroom](/images/vroom_logo.png?raw=true)
-
-![usage screencast](/images/usage_screencast.gif)
-
 _**Vroom is experimental.** There are still some issues with vim that we
 haven't figured out how to work around. We reserve the right to make backwards
 incompatible changes in order to address these._
 
 Vroom is for testing vim.
+
+![usage screencast](https://raw.githubusercontent.com/google/vroom/HEAD/images/usage_screencast.gif)
 
 Let's say you're a vimscript author. You want to test your new plugin. You could
 find a nice vimscript test suite, but that only lets you test your vimscript
@@ -17,10 +15,12 @@ keys that that the user hits — and then verify vim's output.
 
 Enter vroom.
 
-    This is a vroom test.
+```
+This is a vroom test.
 
-      > iHello, world!<ESC>
-      Hello, world!
+  > iHello, world!<ESC>
+  Hello, world!
+```
 
 The above vroom test opens vim, sends the keys `iHello, world!<ESC>` and then
 verifies that the contents of the current buffer is `Hello, world!`.
@@ -51,26 +51,26 @@ examples of usage:
 
 * Running a single file, native vim runner (must have `+clientserver` enabled):
 
-  ```sh
+  ```shell
   vroom myplugin/vroom/somefile.vroom --servername=FOO
   ```
 
 * With native vim, finding files below current directory:
 
-  ```sh
-  vroom --crawl --servername=FOO`
+  ```shell
+  vroom --crawl --servername=FOO
   ```
 
 * With neovim (must have installed both neovim and neovim python plugin):
 
-  ```sh
+  ```shell
   vroom --crawl --neovim --servername=FOO
   ```
 
 * Without running setup.py and with neovim, assuming curdir=vroom repo root:
 
-  ```sh
-  PYTHONPATH=$PWD python3 vroom/__main__.py --neovim --crawl --servername=FOO`
+  ```shell
+  PYTHONPATH=$PWD python3 vroom/__main__.py --neovim --crawl --servername=FOO
   ```
 
 See `vroom --help` and https://github.com/google/vroom/wiki for more info on
@@ -82,19 +82,37 @@ Note that Vroom requires a version of vim built with the `+clientserver`
 option (run `vim --version` to check).  See `:help clientserver` for
 additional requirements.
 
+Install the latest release version from PyPI using pip or pipx:
+
+```shell
+pip install vim-vroom
+# OR: pipx install vim-vroom
+```
+
+Or to install from source, clone the vroom repository from GitHub, cd into the
+vroom directory, and run
+
+```shell
+pip install .
+```
+
+### OS packages
+
 If you're on Ubuntu or Debian, you can install
 [release packages](https://github.com/google/vroom/releases) from GitHub.
 
-Otherwise, the easiest way to install vroom is to clone the vroom repository
-from GitHub, cd into the vroom directory, and run
-```sh
-python3 setup.py build && sudo python3 setup.py install
-```
+Warning: latest packages there may be very old.
+
+### Editor integration
 
 Vim 7.4.384 and later have built-in syntax support for the vroom filetype. You
 can install the standalone
 [ft-vroom plugin](https://github.com/google/vim-ft-vroom) for older versions of
 vim.
+
+For VS Code, syntax highlighting for .vroom files is included in the excellent
+VimL extension:
+https://marketplace.visualstudio.com/items?itemName=XadillaX.viml.
 
 ## Vroom cheat sheet
 
@@ -147,37 +165,53 @@ To use it, you need to install the neovim-mode dependencies:
   * Install neovim for your platform according to the directions at
     https://github.com/neovim/neovim/wiki/Installing.
   * Install [neovim/python-client](https://github.com/neovim/python-client):
-```sh
+```shell
 sudo pip3 install neovim
 ```
 
-## Travis CI
+Warning: Neovim integration doesn't yet support neovim 0.8 or newer
+(https://github.com/google/vroom/issues/124).
+
+## Running in GitHub Actions
 
 You can configure your vim plugin's vroom files to be tested continuously in
-[Travis CI](https://travis-ci.org).
+[GitHub Actions](https://github.com/features/actions).
 
-Just create a .travis.yml file at the root of your repository. The particulars
-may vary for your plugin, but here's an example configuration:
+The workflow file may look something like:
 
-```YAML
-language: generic
-before_script:
-  # Install your desired version of vroom.
-  - wget https://github.com/google/vroom/releases/download/v0.12.0/vroom_0.12.0-1_all.deb
-  - sudo dpkg -i vroom_0.12.0-1_all.deb
-  # Install vim.
-  - sudo apt-get install vim-gnome
-  # Vroom's vim mode currently requires a running X server.
-  - export DISPLAY=:99.0
-  - sh -e /etc/init.d/xvfb start
-  # If your plugin depends on maktaba, clone maktaba into a sibling directory.
-  - git clone https://github.com/google/vim-maktaba.git ../maktaba/
-script:
-  - vroom --crawl ./vroom/
+```yaml
+name: run-tests
+on: [push, pull_request]
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install vim
+        run: |
+          sudo apt update
+          sudo apt install vim vim-gtk xvfb
+      - name: Install vroom
+        env:
+          VROOM_VERSION: 0.14.0
+        run: |
+          wget https://github.com/google/vroom/releases/download/v${VROOM_VERSION}/vroom_${VROOM_VERSION}-1_all.deb
+          sudo dpkg -i ./vroom_${VROOM_VERSION}-1_all.deb
+      # If your plugin depends on maktaba, clone maktaba into a sibling directory.
+      - name: Install plugin deps
+        run: |
+          git clone -b 1.15.0 https://github.com/google/vim-maktaba.git ../maktaba/
+      - name: Run tests (vroom)
+        run: |
+          xvfb-run script -q -e -c 'vroom --crawl ./vroom/'
 ```
 
+See [the vim-codefmt plugin's
+workflow](https://github.com/google/vim-codefmt/blob/HEAD/.github/workflows/run-tests.yml)
+for a full worked example.
+
 It's also possible to test your plugin against neovim, but the recommended
-instructions are still being finalized. Details coming soon.
+instructions are still being finalized.
 
 ## Known issues
 
