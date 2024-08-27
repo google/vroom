@@ -1,18 +1,18 @@
 """Patterns common to all vroom components."""
 import sys
 
+try:
+  from ._version import __version__ as __version__
+except ImportError:
+  import warnings
+  warnings.warn('Failed to load __version__ from setuptools-scm')
+  __version__ = '__unknown__'
+
 
 # Don't even try to run under python 2 or earlier. It will seem to work but fail
 # in corner cases with strange encoding errors.
 if sys.version_info[0] < 3:
   raise ImportError('Python < 3 is unsupported')
-
-
-def __read_version_txt():
-  import pkgutil
-  return pkgutil.get_data('vroom', 'VERSION.txt').decode('utf-8').strip()
-
-__version__ = __read_version_txt()
 
 
 def Specification(*numbered, **named):

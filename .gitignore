@@ -6,3 +6,4 @@
 /*.egg-info/
 /.env/
 /.venv/
+/vroom/_version.py

@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=61.2"]
+requires = ["setuptools>=64", "setuptools-scm>=8"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -30,5 +30,5 @@ script-files = [
     "scripts/vroom",
 ]
 
-[tool.setuptools.dynamic]
-version = { file = "VERSION.txt" }
+[tool.setuptools_scm]
+version_file = "vroom/_version.py"
