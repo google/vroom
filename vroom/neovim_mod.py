@@ -1,12 +1,15 @@
 from vroom.vim import CONFIGFILE
 from vroom.vim import Communicator as VimCommunicator
 import subprocess
+import tempfile
 import time
 import neovim
 import os
 
 class Communicator(VimCommunicator):
   """Object to communicate with a Neovim server."""
+
+  _listen_addr = None
 
   def __init__(self, args, env, writer):
     self.writer = writer.commands
@@ -16,7 +19,6 @@ class Communicator(VimCommunicator):
         '-u', args.vimrc,
         '-c', 'set shell=' + args.shell,
         '-c', 'source %s' % CONFIGFILE]
-    env['NVIM_LISTEN_ADDRESS'] = args.servername
     self.env = env
     self._cache = {}
 
@@ -29,13 +31,21 @@ class Communicator(VimCommunicator):
 
   def Start(self):
     """Starts Neovim"""
+    if self._listen_addr is not None:
+      raise InvocationError('Called Start on already-running neovim instance')
+    tmpdir = tempfile.mkdtemp()
+    self._listen_addr = os.path.join(tmpdir, 'nvim.pipe')
+    # Legacy env var, used by nvim <0.8
+    self.env['NVIM_LISTEN_ADDRESS'] = self._listen_addr
+    self.start_command += ['--listen', self._listen_addr]
+
     self.process = subprocess.Popen(self.start_command, env=self.env)
     start_time = time.time()
     # Wait at most 5s for the Neovim socket
-    while not os.path.exists(self.args.servername) \
+    while not os.path.exists(self._listen_addr) \
             and time.time() - start_time < 5:
       time.sleep(0.01)
-    self.nvim = neovim.attach('socket', path=self.args.servername)
+    self.nvim = neovim.attach('socket', path=self._listen_addr)
 
   def Communicate(self, command, extra_delay=0):
     """Sends a command to Neovim.
@@ -101,5 +111,12 @@ class Communicator(VimCommunicator):
     """Kills the Neovim process and removes the socket"""
     VimCommunicator.Kill(self)
 
-    if os.path.exists(self.args.servername):
-      os.remove(self.args.servername)
+    if os.path.exists(self._listen_addr):
+      os.remove(self._listen_addr)
+
+
+class InvocationError(Exception):
+  """Raised when there's a problem starting or interacting with neovim instance.
+  """
+  is_fatal = True
+
