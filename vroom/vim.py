@@ -96,7 +96,7 @@ class Communicator(object):
     # plugins from ~/.vim/, but it also sets '-u DEFAULTS'. We supply '-u' after
     # to force vim to take our '-u' value (while still avoiding plugins).
     self.start_command = [
-        'vim',
+        self.args.vim_cmd,
         '--clean',
         '-u', args.vimrc,
         '--servername', args.servername,
@@ -155,7 +155,7 @@ class Communicator(object):
     """
     self.writer.Log(command)
     self.TryToSay([
-        'vim',
+        self.args.vim_cmd,
         '--servername', self.args.servername,
         '--remote-send', command])
     self._cache = {}
@@ -174,7 +174,7 @@ class Communicator(object):
     """
     try:
       out = self.TryToSay([
-          'vim',
+          self.args.vim_cmd,
           '--servername', self.args.servername,
           '--remote-expr', 'string(%s)' % expression])
     except ErrorOnExit as e:

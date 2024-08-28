@@ -15,7 +15,7 @@ class Communicator(VimCommunicator):
     self.writer = writer.commands
     self.args = args
     self.start_command = [
-        'nvim',
+        self.args.vim_cmd,
         '-u', args.vimrc,
         '-c', 'set shell=' + args.shell,
         '-c', 'source %s' % CONFIGFILE]
