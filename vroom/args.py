@@ -114,6 +114,14 @@ parser.add_argument(
 Run Neovim instead of Vim
 """)
 
+parser.add_argument(
+    '--vim-cmd',
+    help="""
+Vim command to use internally, useful if you need to override the path to the
+vim executable vroom should use. Defaults to 'vim' or 'nvim', corresponding to
+the --neovim arg.
+""")
+
 #
 # Timing
 
@@ -314,6 +322,9 @@ def Parse(args):
   if args.murder and args.filenames:
     raise ValueError(
         'You may birth tests and you may end them, but not both at once!')
+
+  if args.vim_cmd is None:
+    args.vim_cmd = 'nvim' if args.neovim else 'vim'
 
   return args
 

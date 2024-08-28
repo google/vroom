@@ -39,7 +39,8 @@ def main(argv=None):
       sys.stdout.write('No running vrooms found.\n')
       return 0
     end = 'VroomEnd()'
-    kill = ['vim', '--servername', args.servername, '--remote-expr', end]
+    kill = [args.vim_cmd, '--servername', args.servername,
+            '--remote-expr', end]
     sys.stdout.write("I hope you're happy.\n")
     return subprocess.call(kill)
 
