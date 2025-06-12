@@ -62,6 +62,8 @@ If you need newlines in your dummy output, string hijack commands together.
 You may use system hijack lines to change the exit status using the "status"
 control word:
 
+  :set cmdheight=99
+
   :.!echo "Testing"
   $ 2 (status)
   :echomsg v:shell_error

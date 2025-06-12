@@ -7,9 +7,16 @@ the command that causes them if you want it to work.
 This mechanism allows vroom to know what lines errors occur on. You can match
 multiple messages on one command.
 
+  :set cmdheight=99
+
   :echomsg "First" | echomsg "Second"
   ~ First
   ~ Second
+
+Note sometimes multiple lines of output cause vroom to get stuck at a "Hit ENTER
+to continue" prompt (typically in Neovim mode), and increasing cmdheight is a
+simple workaround to avoid getting stuck. See
+https://github.com/google/vroom/issues/83.
 
 By default, vroom doesn't mind if you miss messages. It only minds if you miss
 messages that vroom thinks look like error messages.

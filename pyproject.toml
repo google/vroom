@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=64", "setuptools-scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vim-vroom"
+authors = [{name = "Nate Soares", email = "nate@so8r.es"}]
+readme = "README.md"
+license = { text = "Apache 2.0" }
+description = "Launch your vimscript tests"
+requires-python = ">= 3.4"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.4",
+    "Topic :: Software Development :: Testing",
+]
+urls = { Repository = "https://github.com/google/vroom" }
+dynamic = ["version"]
+
+[project.optional-dependencies]
+neovim = ["neovim"]
+
+[tool.setuptools]
+packages = ["vroom"]
+script-files = [
+    "scripts/shell.vroomfaker",
+    "scripts/respond.vroomfaker",
+    "scripts/vroom",
+]
+
+[tool.setuptools_scm]
+version_file = "vroom/_version.py"

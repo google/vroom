@@ -1,0 +1,7 @@
+include README.md
+exclude .git*
+
+graft examples/
+graft images/
+
+prune .git*
