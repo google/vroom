@@ -3,8 +3,8 @@ import json
 import os
 import os.path
 import pickle
-import pipes
 import re
+import shlex
 import tempfile
 
 import vroom
@@ -236,7 +236,7 @@ class Hijack(object):
 
     # If we actually want to do anything, call out to the responder.
     if response:
-      return '%s %s' % (self.fakecmd, pipes.quote(json.dumps(response)))
+      return '%s %s' % (self.fakecmd, shlex.quote(json.dumps(response)))
     return command
 
   def Respond(self, line, channel=None):
